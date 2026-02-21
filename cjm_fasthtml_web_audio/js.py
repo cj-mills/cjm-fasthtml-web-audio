@@ -311,8 +311,7 @@ def generate_htmx_settle_handler(
             // Check if this zone is active
             if (window.kbNav) {{
                 var kbState = window.kbNav.getState();
-                if (kbState && kbState.zone !== '{card_stack_id}' &&
-                    !'{card_stack_id}'.includes(kbState.zone)) {{
+                if (kbState && kbState.activeZoneId !== '{card_stack_id}') {{
                     return;
                 }}
             }}
