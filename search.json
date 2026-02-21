@@ -1,0 +1,242 @@
+[
+  {
+    "objectID": "components.html",
+    "href": "components.html",
+    "title": "components",
+    "section": "",
+    "text": "Hidden input that stores audio file URLs as a JSON array. The JS init function reads from this element to know which files to fetch and decode.\n\nsource\n\n\n\ndef render_audio_urls_input(\n    config:WebAudioConfig, # Instance configuration\n    audio_urls:List, # Audio file URLs to load\n    oob:bool=False, # Whether to render as OOB swap\n)-&gt;Any: # Hidden input element with JSON-encoded URLs\n\nRender a hidden input storing audio URLs as JSON.",
+    "crumbs": [
+      "components"
+    ]
+  },
+  {
+    "objectID": "components.html#audio-urls-input",
+    "href": "components.html#audio-urls-input",
+    "title": "components",
+    "section": "",
+    "text": "Hidden input that stores audio file URLs as a JSON array. The JS init function reads from this element to know which files to fetch and decode.\n\nsource\n\n\n\ndef render_audio_urls_input(\n    config:WebAudioConfig, # Instance configuration\n    audio_urls:List, # Audio file URLs to load\n    oob:bool=False, # Whether to render as OOB swap\n)-&gt;Any: # Hidden input element with JSON-encoded URLs\n\nRender a hidden input storing audio URLs as JSON.",
+    "crumbs": [
+      "components"
+    ]
+  },
+  {
+    "objectID": "components.html#web-audio-script",
+    "href": "components.html#web-audio-script",
+    "title": "components",
+    "section": "Web Audio Script",
+    "text": "Web Audio Script\nAssembles the complete JS into a FastHTML Script element.\n\nsource\n\nrender_web_audio_script\n\ndef render_web_audio_script(\n    config:WebAudioConfig, # Instance configuration\n    focus_input_id:str, # Hidden input ID for focused index\n    card_stack_id:str, # Card stack container ID\n    nav_down_btn_id:str='', # Nav down button ID (for auto-navigate)\n)-&gt;Any: # Script element with complete Web Audio JS\n\nRender the complete Web Audio API script for a configured instance.",
+    "crumbs": [
+      "components"
+    ]
+  },
+  {
+    "objectID": "components.html#tests",
+    "href": "components.html#tests",
+    "title": "components",
+    "section": "Tests",
+    "text": "Tests\n\nfrom fasthtml.common import to_xml\n\ncfg = WebAudioConfig(namespace=\"demo\", indicator_selector=\".demo-indicator\")\n\n# Test audio URLs input\nurls_input = render_audio_urls_input(cfg, [\"/audio/file1.mp3\", \"/audio/file2.mp3\"])\nhtml = to_xml(urls_input)\nassert 'id=\"sd-demo-audio-urls\"' in html\nassert '/audio/file1.mp3' in html\nassert '/audio/file2.mp3' in html\nassert 'type=\"hidden\"' in html\n\n# Test OOB mode\noob_input = render_audio_urls_input(cfg, [\"/audio/file1.mp3\"], oob=True)\noob_html = to_xml(oob_input)\nassert 'hx-swap-oob=\"true\"' in oob_html\n\n# Test script rendering\nscript = render_web_audio_script(cfg, focus_input_id=\"demo-focus\", card_stack_id=\"demo-cs\")\nscript_html = to_xml(script)\nassert 'initDemoAudio' in script_html\nassert 'playDemoSegment' in script_html\n\nprint(\"All component tests passed\")\n\nAll component tests passed",
+    "crumbs": [
+      "components"
+    ]
+  },
+  {
+    "objectID": "js.html",
+    "href": "js.html",
+    "title": "js",
+    "section": "",
+    "text": "Generates the JS state object for a Web Audio manager instance.\n\nsource\n\n\n\ndef generate_state_init(\n    config:WebAudioConfig, # Instance configuration\n)-&gt;str: # JS code that initializes the state object\n\nGenerate JS code to initialize the namespaced state object.",
+    "crumbs": [
+      "js"
+    ]
+  },
+  {
+    "objectID": "js.html#state-initialization",
+    "href": "js.html#state-initialization",
+    "title": "js",
+    "section": "",
+    "text": "Generates the JS state object for a Web Audio manager instance.\n\nsource\n\n\n\ndef generate_state_init(\n    config:WebAudioConfig, # Instance configuration\n)-&gt;str: # JS code that initializes the state object\n\nGenerate JS code to initialize the namespaced state object.",
+    "crumbs": [
+      "js"
+    ]
+  },
+  {
+    "objectID": "js.html#init-audio",
+    "href": "js.html#init-audio",
+    "title": "js",
+    "section": "Init Audio",
+    "text": "Init Audio\nReads audio URLs from a hidden input, fetches all files, and decodes them in parallel via Promise.all().\n\nsource\n\ngenerate_init_audio\n\ndef generate_init_audio(\n    config:WebAudioConfig, # Instance configuration\n)-&gt;str: # JS init function\n\nGenerate JS function that loads and decodes audio files in parallel.",
+    "crumbs": [
+      "js"
+    ]
+  },
+  {
+    "objectID": "js.html#stop-audio",
+    "href": "js.html#stop-audio",
+    "title": "js",
+    "section": "Stop Audio",
+    "text": "Stop Audio\n\nsource\n\ngenerate_stop_audio\n\ndef generate_stop_audio(\n    config:WebAudioConfig, # Instance configuration\n)-&gt;str: # JS stop function\n\nGenerate JS function that stops current playback.",
+    "crumbs": [
+      "js"
+    ]
+  },
+  {
+    "objectID": "js.html#play-segment",
+    "href": "js.html#play-segment",
+    "title": "js",
+    "section": "Play Segment",
+    "text": "Play Segment\nPlays a time range from a specific audio buffer. Supports optional playback speed and auto-navigate.\n\nsource\n\ngenerate_play_segment\n\ndef generate_play_segment(\n    config:WebAudioConfig, # Instance configuration\n    nav_down_btn_id:str='', # Nav down button ID (for auto-navigate)\n)-&gt;str: # JS play function\n\nGenerate JS function that plays a segment from a specific buffer.",
+    "crumbs": [
+      "js"
+    ]
+  },
+  {
+    "objectID": "js.html#optional-features",
+    "href": "js.html#optional-features",
+    "title": "js",
+    "section": "Optional Features",
+    "text": "Optional Features\nSpeed control, replay, and auto-navigate functions generated only when enabled.\n\nsource\n\ngenerate_optional_features\n\ndef generate_optional_features(\n    config:WebAudioConfig, # Instance configuration\n)-&gt;str: # JS for optional feature functions (empty if none enabled)\n\nGenerate JS for optional features based on config flags.",
+    "crumbs": [
+      "js"
+    ]
+  },
+  {
+    "objectID": "js.html#focus-change-callback",
+    "href": "js.html#focus-change-callback",
+    "title": "js",
+    "section": "Focus Change Callback",
+    "text": "Focus Change Callback\nCard-stack-compatible callback triggered on focus changes. Reads data attributes from the card element to determine which buffer and time range to play.\n\nsource\n\ngenerate_focus_change\n\ndef generate_focus_change(\n    config:WebAudioConfig, # Instance configuration\n    focus_input_id:str, # Hidden input ID for focused index\n)-&gt;str: # JS focus change callback\n\nGenerate JS focus change callback for card stack integration.",
+    "crumbs": [
+      "js"
+    ]
+  },
+  {
+    "objectID": "js.html#htmx-aftersettle-handler",
+    "href": "js.html#htmx-aftersettle-handler",
+    "title": "js",
+    "section": "HTMX AfterSettle Handler",
+    "text": "HTMX AfterSettle Handler\nRe-attaches after each card swap to trigger focus change callback when navigation completes.\n\nsource\n\ngenerate_htmx_settle_handler\n\ndef generate_htmx_settle_handler(\n    config:WebAudioConfig, # Instance configuration\n    card_stack_id:str, # Card stack container ID\n)-&gt;str: # JS HTMX afterSettle handler\n\nGenerate HTMX afterSettle handler for card stack navigation.",
+    "crumbs": [
+      "js"
+    ]
+  },
+  {
+    "objectID": "js.html#full-script-assembly",
+    "href": "js.html#full-script-assembly",
+    "title": "js",
+    "section": "Full Script Assembly",
+    "text": "Full Script Assembly\nCombines all JS parts into a single string.\n\nsource\n\ngenerate_web_audio_js\n\ndef generate_web_audio_js(\n    config:WebAudioConfig, # Instance configuration\n    focus_input_id:str, # Hidden input ID for focused index\n    card_stack_id:str, # Card stack container ID\n    nav_down_btn_id:str='', # Nav down button ID (for auto-navigate)\n)-&gt;str: # Complete JS code for this instance\n\nGenerate the complete Web Audio API JS for a configured instance.",
+    "crumbs": [
+      "js"
+    ]
+  },
+  {
+    "objectID": "js.html#tests",
+    "href": "js.html#tests",
+    "title": "js",
+    "section": "Tests",
+    "text": "Tests\n\n# Test basic config generates expected function names\ncfg = WebAudioConfig(namespace=\"test\", indicator_selector=\".test-indicator\")\njs = generate_web_audio_js(cfg, focus_input_id=\"test-focus\", card_stack_id=\"test-cs\")\n\nassert \"window._webAudio_test\" in js\nassert \"window.initTestAudio\" in js\nassert \"window.stopTestAudio\" in js\nassert \"window.playTestSegment\" in js\nassert \"window.onTestFocusChange\" in js\nassert \"sd-test-audio-urls\" in js\nassert \"Promise.all\" in js\n\n# No optional features by default\nassert \"setTestSpeed\" not in js\nassert \"replayTestSegment\" not in js\nassert \"setTestAutoNavigate\" not in js\nprint(\"Basic config test passed\")\n\nBasic config test passed\n\n\n\n# Test full-featured config\ncfg2 = WebAudioConfig(\n    namespace=\"review\",\n    indicator_selector=\".review-playing-indicator\",\n    enable_speed=True, enable_replay=True, enable_auto_nav=True,\n)\njs2 = generate_web_audio_js(\n    cfg2, focus_input_id=\"review-focus\", card_stack_id=\"review-cs\",\n    nav_down_btn_id=\"review-nav-down\",\n)\n\nassert \"window._webAudio_review\" in js2\nassert \"window.setReviewSpeed\" in js2\nassert \"window.replayReviewSegment\" in js2\nassert \"window.setReviewAutoNavigate\" in js2\nassert \"playbackSpeed\" in js2\nassert \"review-nav-down\" in js2\nassert \"autoNavigate\" in js2\nprint(\"Full-featured config test passed\")\n\nFull-featured config test passed",
+    "crumbs": [
+      "js"
+    ]
+  },
+  {
+    "objectID": "models.html",
+    "href": "models.html",
+    "title": "models",
+    "section": "",
+    "text": "source\n\n\n\ndef WebAudioConfig(\n    namespace:str, indicator_selector:str, data_index_attr:str='audioFileIndex', data_start_attr:str='startTime',\n    data_end_attr:str='endTime', enable_speed:bool=False, enable_replay:bool=False, enable_auto_nav:bool=False\n)-&gt;None:\n\nConfiguration for a Web Audio API manager instance.",
+    "crumbs": [
+      "models"
+    ]
+  },
+  {
+    "objectID": "models.html#webaudioconfig",
+    "href": "models.html#webaudioconfig",
+    "title": "models",
+    "section": "",
+    "text": "source\n\n\n\ndef WebAudioConfig(\n    namespace:str, indicator_selector:str, data_index_attr:str='audioFileIndex', data_start_attr:str='startTime',\n    data_end_attr:str='endTime', enable_speed:bool=False, enable_replay:bool=False, enable_auto_nav:bool=False\n)-&gt;None:\n\nConfiguration for a Web Audio API manager instance.",
+    "crumbs": [
+      "models"
+    ]
+  },
+  {
+    "objectID": "models.html#webaudiohtmlids",
+    "href": "models.html#webaudiohtmlids",
+    "title": "models",
+    "section": "WebAudioHtmlIds",
+    "text": "WebAudioHtmlIds\n\nsource\n\nWebAudioHtmlIds\n\ndef WebAudioHtmlIds(\n    args:VAR_POSITIONAL, kwargs:VAR_KEYWORD\n):\n\nHTML ID generators for Web Audio manager elements.",
+    "crumbs": [
+      "models"
+    ]
+  },
+  {
+    "objectID": "models.html#tests",
+    "href": "models.html#tests",
+    "title": "models",
+    "section": "Tests",
+    "text": "Tests\n\ncfg = WebAudioConfig(namespace=\"align\", indicator_selector=\".vad-playing-indicator\")\nassert cfg.ns == \"Align\"\nassert cfg.state_key == \"_webAudio_align\"\nassert cfg.data_index_attr == \"audioFileIndex\"\nassert cfg.enable_speed == False\n\ncfg2 = WebAudioConfig(\n    namespace=\"review\",\n    indicator_selector=\".review-playing-indicator\",\n    enable_speed=True, enable_replay=True, enable_auto_nav=True,\n)\nassert cfg2.ns == \"Review\"\nassert cfg2.state_key == \"_webAudio_review\"\nassert cfg2.enable_speed == True\n\nassert WebAudioHtmlIds.audio_urls_input(\"align\") == \"sd-align-audio-urls\"\nprint(\"All tests passed\")\n\nAll tests passed",
+    "crumbs": [
+      "models"
+    ]
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "cjm-fasthtml-web-audio",
+    "section": "",
+    "text": "pip install cjm_fasthtml_web_audio",
+    "crumbs": [
+      "cjm-fasthtml-web-audio"
+    ]
+  },
+  {
+    "objectID": "index.html#install",
+    "href": "index.html#install",
+    "title": "cjm-fasthtml-web-audio",
+    "section": "",
+    "text": "pip install cjm_fasthtml_web_audio",
+    "crumbs": [
+      "cjm-fasthtml-web-audio"
+    ]
+  },
+  {
+    "objectID": "index.html#project-structure",
+    "href": "index.html#project-structure",
+    "title": "cjm-fasthtml-web-audio",
+    "section": "Project Structure",
+    "text": "Project Structure\nnbs/\n├── components.ipynb # FastHTML component helpers for the Web Audio API manager\n├── js.ipynb         # JavaScript generation for the Web Audio API manager\n└── models.ipynb     # Configuration and HTML ID types for the Web Audio API manager\nTotal: 3 notebooks",
+    "crumbs": [
+      "cjm-fasthtml-web-audio"
+    ]
+  },
+  {
+    "objectID": "index.html#module-dependencies",
+    "href": "index.html#module-dependencies",
+    "title": "cjm-fasthtml-web-audio",
+    "section": "Module Dependencies",
+    "text": "Module Dependencies\ngraph LR\n    components[components&lt;br/&gt;components]\n    js[js&lt;br/&gt;js]\n    models[models&lt;br/&gt;models]\n\n    components --&gt; models\n    components --&gt; js\n    js --&gt; models\n3 cross-module dependencies detected",
+    "crumbs": [
+      "cjm-fasthtml-web-audio"
+    ]
+  },
+  {
+    "objectID": "index.html#cli-reference",
+    "href": "index.html#cli-reference",
+    "title": "cjm-fasthtml-web-audio",
+    "section": "CLI Reference",
+    "text": "CLI Reference\nNo CLI commands found in this project.",
+    "crumbs": [
+      "cjm-fasthtml-web-audio"
+    ]
+  },
+  {
+    "objectID": "index.html#module-overview",
+    "href": "index.html#module-overview",
+    "title": "cjm-fasthtml-web-audio",
+    "section": "Module Overview",
+    "text": "Module Overview\nDetailed documentation for each module in the project:\n\ncomponents (components.ipynb)\n\nFastHTML component helpers for the Web Audio API manager\n\n\nImport\nfrom cjm_fasthtml_web_audio.components import (\n    render_audio_urls_input,\n    render_web_audio_script\n)\n\n\nFunctions\ndef render_audio_urls_input(\n    config: WebAudioConfig,    # Instance configuration\n    audio_urls: List[str],     # Audio file URLs to load\n    oob: bool = False,         # Whether to render as OOB swap\n) -&gt; Any:  # Hidden input element with JSON-encoded URLs\n    \"Render a hidden input storing audio URLs as JSON.\"\ndef render_web_audio_script(\n    config: WebAudioConfig,        # Instance configuration\n    focus_input_id: str,           # Hidden input ID for focused index\n    card_stack_id: str,            # Card stack container ID\n    nav_down_btn_id: str = \"\",     # Nav down button ID (for auto-navigate)\n) -&gt; Any:  # Script element with complete Web Audio JS\n    \"Render the complete Web Audio API script for a configured instance.\"\n\n\n\njs (js.ipynb)\n\nJavaScript generation for the Web Audio API manager\n\n\nImport\nfrom cjm_fasthtml_web_audio.js import (\n    generate_state_init,\n    generate_init_audio,\n    generate_stop_audio,\n    generate_play_segment,\n    generate_optional_features,\n    generate_focus_change,\n    generate_htmx_settle_handler,\n    generate_web_audio_js\n)\n\n\nFunctions\ndef generate_state_init(\n    config: WebAudioConfig,  # Instance configuration\n) -&gt; str:  # JS code that initializes the state object\n    \"Generate JS code to initialize the namespaced state object.\"\ndef generate_init_audio(\n    config: WebAudioConfig,  # Instance configuration\n) -&gt; str:  # JS init function\n    \"Generate JS function that loads and decodes audio files in parallel.\"\ndef generate_stop_audio(\n    config: WebAudioConfig,  # Instance configuration\n) -&gt; str:  # JS stop function\n    \"Generate JS function that stops current playback.\"\ndef generate_play_segment(\n    config: WebAudioConfig,  # Instance configuration\n    nav_down_btn_id: str = \"\",  # Nav down button ID (for auto-navigate)\n) -&gt; str:  # JS play function\n    \"Generate JS function that plays a segment from a specific buffer.\"\ndef generate_optional_features(\n    config: WebAudioConfig,  # Instance configuration\n) -&gt; str:  # JS for optional feature functions (empty if none enabled)\n    \"Generate JS for optional features based on config flags.\"\ndef generate_focus_change(\n    config: WebAudioConfig,  # Instance configuration\n    focus_input_id: str,  # Hidden input ID for focused index\n) -&gt; str:  # JS focus change callback\n    \"Generate JS focus change callback for card stack integration.\"\ndef generate_htmx_settle_handler(\n    config: WebAudioConfig,  # Instance configuration\n    card_stack_id: str,  # Card stack container ID\n) -&gt; str:  # JS HTMX afterSettle handler\n    \"Generate HTMX afterSettle handler for card stack navigation.\"\ndef generate_web_audio_js(\n    config: WebAudioConfig,  # Instance configuration\n    focus_input_id: str,  # Hidden input ID for focused index\n    card_stack_id: str,  # Card stack container ID\n    nav_down_btn_id: str = \"\",  # Nav down button ID (for auto-navigate)\n) -&gt; str:  # Complete JS code for this instance\n    \"Generate the complete Web Audio API JS for a configured instance.\"\n\n\n\nmodels (models.ipynb)\n\nConfiguration and HTML ID types for the Web Audio API manager\n\n\nImport\nfrom cjm_fasthtml_web_audio.models import (\n    WebAudioConfig,\n    WebAudioHtmlIds\n)\n\n\nClasses\n@dataclass\nclass WebAudioConfig:\n    \"Configuration for a Web Audio API manager instance.\"\n    \n    namespace: str  # Unique prefix (e.g., \"align\", \"review\")\n    indicator_selector: str  # CSS selector for playing indicators\n    data_index_attr: str = 'audioFileIndex'  # Data attr name for buffer index\n    data_start_attr: str = 'startTime'  # Data attr name for start time\n    data_end_attr: str = 'endTime'  # Data attr name for end time\n    enable_speed: bool = False  # Playback speed support\n    enable_replay: bool = False  # Replay current segment support\n    enable_auto_nav: bool = False  # Auto-navigate on completion support\n    \n    def ns(self) -&gt; str:  # Capitalized namespace for JS function names\n            \"\"\"Capitalized namespace for JS function names (e.g., 'align' -&gt; 'Align').\"\"\"\n            return self.namespace.capitalize()\n    \n        @property\n        def state_key(self) -&gt; str:  # JS state object key\n        \"Capitalized namespace for JS function names (e.g., 'align' -&gt; 'Align').\"\n    \n    def state_key(self) -&gt; str:  # JS state object key\n        \"JS global state object key (e.g., '_webAudio_align').\"\nclass WebAudioHtmlIds:\n    \"HTML ID generators for Web Audio manager elements.\"\n    \n    def audio_urls_input(\n            namespace: str  # Instance namespace\n        ) -&gt; str:  # HTML ID for audio URLs hidden input\n        \"ID for the hidden input storing audio file URLs as JSON.\"",
+    "crumbs": [
+      "cjm-fasthtml-web-audio"
+    ]
+  }
+]
