@@ -8,3 +8,203 @@
 ``` bash
 pip install cjm_fasthtml_web_audio
 ```
+
+## Project Structure
+
+    nbs/
+    ├── components.ipynb # FastHTML component helpers for the Web Audio API manager
+    ├── js.ipynb         # JavaScript generation for the Web Audio API manager
+    └── models.ipynb     # Configuration and HTML ID types for the Web Audio API manager
+
+Total: 3 notebooks
+
+## Module Dependencies
+
+``` mermaid
+graph LR
+    components[components<br/>components]
+    js[js<br/>js]
+    models[models<br/>models]
+
+    components --> models
+    components --> js
+    js --> models
+```
+
+*3 cross-module dependencies detected*
+
+## CLI Reference
+
+No CLI commands found in this project.
+
+## Module Overview
+
+Detailed documentation for each module in the project:
+
+### components (`components.ipynb`)
+
+> FastHTML component helpers for the Web Audio API manager
+
+#### Import
+
+``` python
+from cjm_fasthtml_web_audio.components import (
+    render_audio_urls_input,
+    render_web_audio_script
+)
+```
+
+#### Functions
+
+``` python
+def render_audio_urls_input(
+    config: WebAudioConfig,    # Instance configuration
+    audio_urls: List[str],     # Audio file URLs to load
+    oob: bool = False,         # Whether to render as OOB swap
+) -> Any:  # Hidden input element with JSON-encoded URLs
+    "Render a hidden input storing audio URLs as JSON."
+```
+
+``` python
+def render_web_audio_script(
+    config: WebAudioConfig,        # Instance configuration
+    focus_input_id: str,           # Hidden input ID for focused index
+    card_stack_id: str,            # Card stack container ID
+    nav_down_btn_id: str = "",     # Nav down button ID (for auto-navigate)
+) -> Any:  # Script element with complete Web Audio JS
+    "Render the complete Web Audio API script for a configured instance."
+```
+
+### js (`js.ipynb`)
+
+> JavaScript generation for the Web Audio API manager
+
+#### Import
+
+``` python
+from cjm_fasthtml_web_audio.js import (
+    generate_state_init,
+    generate_init_audio,
+    generate_stop_audio,
+    generate_play_segment,
+    generate_optional_features,
+    generate_focus_change,
+    generate_htmx_settle_handler,
+    generate_web_audio_js
+)
+```
+
+#### Functions
+
+``` python
+def generate_state_init(
+    config: WebAudioConfig,  # Instance configuration
+) -> str:  # JS code that initializes the state object
+    "Generate JS code to initialize the namespaced state object."
+```
+
+``` python
+def generate_init_audio(
+    config: WebAudioConfig,  # Instance configuration
+) -> str:  # JS init function
+    "Generate JS function that loads and decodes audio files in parallel."
+```
+
+``` python
+def generate_stop_audio(
+    config: WebAudioConfig,  # Instance configuration
+) -> str:  # JS stop function
+    "Generate JS function that stops current playback."
+```
+
+``` python
+def generate_play_segment(
+    config: WebAudioConfig,  # Instance configuration
+    nav_down_btn_id: str = "",  # Nav down button ID (for auto-navigate)
+) -> str:  # JS play function
+    "Generate JS function that plays a segment from a specific buffer."
+```
+
+``` python
+def generate_optional_features(
+    config: WebAudioConfig,  # Instance configuration
+) -> str:  # JS for optional feature functions (empty if none enabled)
+    "Generate JS for optional features based on config flags."
+```
+
+``` python
+def generate_focus_change(
+    config: WebAudioConfig,  # Instance configuration
+    focus_input_id: str,  # Hidden input ID for focused index
+) -> str:  # JS focus change callback
+    "Generate JS focus change callback for card stack integration."
+```
+
+``` python
+def generate_htmx_settle_handler(
+    config: WebAudioConfig,  # Instance configuration
+    card_stack_id: str,  # Card stack container ID
+) -> str:  # JS HTMX afterSettle handler
+    "Generate HTMX afterSettle handler for card stack navigation."
+```
+
+``` python
+def generate_web_audio_js(
+    config: WebAudioConfig,  # Instance configuration
+    focus_input_id: str,  # Hidden input ID for focused index
+    card_stack_id: str,  # Card stack container ID
+    nav_down_btn_id: str = "",  # Nav down button ID (for auto-navigate)
+) -> str:  # Complete JS code for this instance
+    "Generate the complete Web Audio API JS for a configured instance."
+```
+
+### models (`models.ipynb`)
+
+> Configuration and HTML ID types for the Web Audio API manager
+
+#### Import
+
+``` python
+from cjm_fasthtml_web_audio.models import (
+    WebAudioConfig,
+    WebAudioHtmlIds
+)
+```
+
+#### Classes
+
+``` python
+@dataclass
+class WebAudioConfig:
+    "Configuration for a Web Audio API manager instance."
+    
+    namespace: str  # Unique prefix (e.g., "align", "review")
+    indicator_selector: str  # CSS selector for playing indicators
+    data_index_attr: str = 'audioFileIndex'  # Data attr name for buffer index
+    data_start_attr: str = 'startTime'  # Data attr name for start time
+    data_end_attr: str = 'endTime'  # Data attr name for end time
+    enable_speed: bool = False  # Playback speed support
+    enable_replay: bool = False  # Replay current segment support
+    enable_auto_nav: bool = False  # Auto-navigate on completion support
+    
+    def ns(self) -> str:  # Capitalized namespace for JS function names
+            """Capitalized namespace for JS function names (e.g., 'align' -> 'Align')."""
+            return self.namespace.capitalize()
+    
+        @property
+        def state_key(self) -> str:  # JS state object key
+        "Capitalized namespace for JS function names (e.g., 'align' -> 'Align')."
+    
+    def state_key(self) -> str:  # JS state object key
+        "JS global state object key (e.g., '_webAudio_align')."
+```
+
+``` python
+class WebAudioHtmlIds:
+    "HTML ID generators for Web Audio manager elements."
+    
+    def audio_urls_input(
+            namespace: str  # Instance namespace
+        ) -> str:  # HTML ID for audio URLs hidden input
+        "ID for the hidden input storing audio file URLs as JSON."
+```
