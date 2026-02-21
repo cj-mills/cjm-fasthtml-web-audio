@@ -1,0 +1,9 @@
+project:
+  output-dir: _docs
+
+website:
+  title: "cjm-fasthtml-web-audio"
+  site-url: "https://cj-mills.github.io/cjm-fasthtml-web-audio"
+  description: "A reusable Web Audio API manager for FastHTML applications with multi-buffer support, parallel decode, and card-stack-compatible playback."
+  repo-branch: main
+  repo-url: "https://github.com/cj-mills/cjm-fasthtml-web-audio"
