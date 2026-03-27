@@ -242,11 +242,15 @@ def main():
     audio_urls = [f"{AUDIO_SRC_PREFIX}?path={f}" for f in audio_files]
 
     # Initialize FastHTML app
+    APP_ID = "webaudio"
+
     app, rt = fast_app(
         pico=False,
         hdrs=[*get_daisyui_headers(), create_theme_persistence_script()],
         title="Web Audio Demo",
         htmlkw={'data-theme': 'light'},
+        session_cookie=f'session_{APP_ID}_',
+        secret_key=f'{APP_ID}-demo-secret',
     )
 
     router = APIRouter(prefix="")
