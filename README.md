@@ -26,8 +26,8 @@ graph LR
     js[js<br/>js]
     models[models<br/>models]
 
-    components --> js
     components --> models
+    components --> js
     js --> models
 ```
 
