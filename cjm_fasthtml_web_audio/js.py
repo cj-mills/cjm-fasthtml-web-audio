@@ -204,7 +204,7 @@ def generate_play_segment(
             clampStart.toFixed(2) + 's -> ' + clampEnd.toFixed(2) + 's');
         
         s.playTimeout = setTimeout(function() {{
-            if (indicator) indicator.style.visibility = 'hidden';{auto_nav}
+            if (indicator) indicator.style.display = 'none';{auto_nav}
         }}, {timeout_expr});
     }};"""
 
@@ -228,7 +228,7 @@ def generate_optional_features(
         if (s.currentSegment) {{
             s.lastPlayedIndex = null;
             var c = s.currentSegment;
-            if (c.indicator) c.indicator.style.visibility = 'visible';
+            if (c.indicator) c.indicator.style.display = '';
             window.play{ns}Segment(c.bufferIndex, c.start, c.end, c.indicator);
         }}
     }};""")
@@ -272,7 +272,7 @@ def generate_focus_change(
         
         // Hide all indicators
         document.querySelectorAll('{indicator_sel}').forEach(function(el) {{
-            el.style.visibility = 'hidden';
+            el.style.display = 'none';
         }});
         
         // Read data attributes
@@ -284,7 +284,7 @@ def generate_focus_change(
         
         // Show indicator on current card
         var indicator = item.querySelector('{indicator_sel}');
-        if (indicator) indicator.style.visibility = 'visible';
+        if (indicator) indicator.style.display = '';
         
         window.play{ns}Segment(bufferIndex, startTime, endTime, indicator);
     }};"""

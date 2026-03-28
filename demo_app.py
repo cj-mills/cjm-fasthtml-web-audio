@@ -82,7 +82,7 @@ def build_segment_card(i, audio_file, namespace):
             Span(
                 "playing",
                 cls=combine_classes(indicator_cls, font_size.xs, text_dui.success),
-                style="visibility:hidden;",
+                style="display:none;",
             ),
             cls=combine_classes(flex_display, items.center, gap(3), grow()),
         ),
