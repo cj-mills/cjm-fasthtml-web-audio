@@ -303,12 +303,10 @@ def generate_htmx_settle_handler(
             document.body.removeEventListener('htmx:afterSettle', window[handlerKey]);
         }}
         window[handlerKey] = function(evt) {{
-            var target = evt.detail.target || evt.target;
             var csEl = document.getElementById('{card_stack_id}');
             if (!csEl) return;
-            if (target.id !== '{card_stack_id}' && !csEl.contains(target)) return;
             
-            // Check if this zone is active
+            // Only trigger audio for the active keyboard zone
             if (window.kbNav) {{
                 var kbState = window.kbNav.getState();
                 if (kbState && kbState.activeZoneId !== '{card_stack_id}') {{
