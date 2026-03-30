@@ -296,7 +296,31 @@ def generate_htmx_settle_handler(
 ) -> str:  # JS HTMX afterSettle handler
     """Generate HTMX afterSettle handler for card stack navigation."""
     ns = config.ns
-    
+    sk = config.state_key
+
+    # When auto-navigate is enabled, allow audio even when zone is not active
+    # (e.g., user is on the segmentation column while alignment auto-plays)
+    if config.enable_auto_nav:
+        zone_guard = f"""
+            // Play audio if zone is active or auto-navigate is running
+            var zoneActive = true;
+            if (window.kbNav) {{
+                var kbState = window.kbNav.getState();
+                if (kbState) zoneActive = (kbState.activeZoneId === '{card_stack_id}');
+            }}
+            if (!zoneActive && !(window.{sk} && window.{sk}.autoNavigate)) {{
+                return;
+            }}"""
+    else:
+        zone_guard = f"""
+            // Only trigger audio for the active keyboard zone
+            if (window.kbNav) {{
+                var kbState = window.kbNav.getState();
+                if (kbState && kbState.activeZoneId !== '{card_stack_id}') {{
+                    return;
+                }}
+            }}"""
+
     return f"""(function() {{
         var handlerKey = '_{config.namespace}FocusSettleHandler';
         if (window[handlerKey]) {{
@@ -305,14 +329,7 @@ def generate_htmx_settle_handler(
         window[handlerKey] = function(evt) {{
             var csEl = document.getElementById('{card_stack_id}');
             if (!csEl) return;
-            
-            // Only trigger audio for the active keyboard zone
-            if (window.kbNav) {{
-                var kbState = window.kbNav.getState();
-                if (kbState && kbState.activeZoneId !== '{card_stack_id}') {{
-                    return;
-                }}
-            }}
+            {zone_guard}
             
             var focused = csEl.querySelector('[data-card-role="focused"]');
             if (focused) {{
