@@ -145,7 +145,13 @@ def generate_htmx_settle_handler(
     config: WebAudioConfig,  # Instance configuration
     card_stack_id: str,  # Card stack container ID
 ) -> str:  # JS HTMX afterSettle handler
-    "Generate HTMX afterSettle handler for card stack navigation."
+    """
+    Generate HTMX afterSettle handler for card stack navigation.
+    
+    When `config.should_play_fn` is set, delegates the play guard to a consumer-defined
+    window function (e.g., `window.shouldAlignPlay()`). Otherwise uses the default
+    inline guard based on zone active state and auto-navigate flag.
+    """
 ```
 
 ``` python
@@ -186,6 +192,7 @@ class WebAudioConfig:
     enable_speed: bool = False  # Playback speed support
     enable_replay: bool = False  # Replay current segment support
     enable_auto_nav: bool = False  # Auto-navigate on completion support
+    should_play_fn: str = ''  # Named window function for custom play guard (replaces default zone guard)
     
     def ns(self) -> str:  # Capitalized namespace for JS function names
             """Capitalized namespace for JS function names (e.g., 'align' -> 'Align')."""

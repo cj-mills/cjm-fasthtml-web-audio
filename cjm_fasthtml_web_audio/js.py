@@ -294,13 +294,23 @@ def generate_htmx_settle_handler(
     config: WebAudioConfig,  # Instance configuration
     card_stack_id: str,  # Card stack container ID
 ) -> str:  # JS HTMX afterSettle handler
-    """Generate HTMX afterSettle handler for card stack navigation."""
+    """Generate HTMX afterSettle handler for card stack navigation.
+    
+    When `config.should_play_fn` is set, delegates the play guard to a consumer-defined
+    window function (e.g., `window.shouldAlignPlay()`). Otherwise uses the default
+    inline guard based on zone active state and auto-navigate flag.
+    """
     ns = config.ns
     sk = config.state_key
 
-    # When auto-navigate is enabled, allow audio even when zone is not active
-    # (e.g., user is on the segmentation column while alignment auto-plays)
-    if config.enable_auto_nav:
+    if config.should_play_fn:
+        # Consumer-defined callback replaces the entire zone guard
+        zone_guard = f"""
+            if (typeof window.{config.should_play_fn} === 'function') {{
+                if (!window.{config.should_play_fn}('{card_stack_id}')) return;
+            }}"""
+    elif config.enable_auto_nav:
+        # Default: allow audio when zone is active or auto-navigate is running
         zone_guard = f"""
             // Play audio if zone is active or auto-navigate is running
             var zoneActive = true;
@@ -312,6 +322,7 @@ def generate_htmx_settle_handler(
                 return;
             }}"""
     else:
+        # Default: strict zone-active guard
         zone_guard = f"""
             // Only trigger audio for the active keyboard zone
             if (window.kbNav) {{

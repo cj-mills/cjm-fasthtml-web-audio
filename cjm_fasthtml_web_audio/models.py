@@ -20,6 +20,7 @@ class WebAudioConfig:
     enable_speed: bool = False                  # Playback speed support
     enable_replay: bool = False                 # Replay current segment support
     enable_auto_nav: bool = False               # Auto-navigate on completion support
+    should_play_fn: str = ""                    # Named window function for custom play guard (replaces default zone guard)
 
     @property
     def ns(self) -> str:  # Capitalized namespace for JS function names
