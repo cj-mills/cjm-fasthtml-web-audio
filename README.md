@@ -26,8 +26,8 @@ graph LR
     js[js<br/>js]
     models[models<br/>models]
 
-    components --> js
     components --> models
+    components --> js
     js --> models
 ```
 
@@ -52,7 +52,8 @@ from cjm_fasthtml_web_audio.components import (
     DEFAULT_STATIC_MOUNT_PATH,
     render_audio_urls_input,
     render_web_audio_script,
-    mount_web_audio_static
+    mount_web_audio_static,
+    render_initial_speed_sync
 )
 ```
 
@@ -90,6 +91,21 @@ def mount_web_audio_static(
     worklet processor is served; when `mount_path` is the default the URL equals
     `DEFAULT_WORKLET_URL` — so `WebAudioConfig(enable_speed=True)` with no explicit
     `worklet_url` just works.
+    """
+```
+
+``` python
+def render_initial_speed_sync(
+    config: WebAudioConfig,     # Instance configuration
+    speed: float,               # Persisted playback speed (e.g. from step state)
+) -> Any:                       # Script element (empty if speed is default or speed is disabled)
+    """
+    Render a <Script> that syncs the JS state's playbackSpeed to `speed` after insertion.
+    
+    Polls briefly (~1 second, 20ms intervals) for `window.set{Ns}Speed` so the helper
+    works regardless of whether the web-audio script or the toolbar script runs first.
+    Returns an empty Script when `speed == 1.0` (state_init already defaults to 1.0)
+    or when `config.enable_speed` is False.
     """
 ```
 
