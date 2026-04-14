@@ -26,8 +26,8 @@ graph LR
     js[js<br/>js]
     models[models<br/>models]
 
-    components --> models
     components --> js
+    components --> models
     js --> models
 ```
 
@@ -49,8 +49,10 @@ Detailed documentation for each module in the project:
 
 ``` python
 from cjm_fasthtml_web_audio.components import (
+    DEFAULT_STATIC_MOUNT_PATH,
     render_audio_urls_input,
-    render_web_audio_script
+    render_web_audio_script,
+    mount_web_audio_static
 )
 ```
 
@@ -75,6 +77,28 @@ def render_web_audio_script(
     "Render the complete Web Audio API script for a configured instance."
 ```
 
+``` python
+def mount_web_audio_static(
+    app,                                            # FastHTML/Starlette app
+    mount_path: str = DEFAULT_STATIC_MOUNT_PATH,    # URL prefix to mount static dir at
+) -> str:                                           # URL of the SoundTouch worklet processor
+    """
+    Mount the library's vendored static assets (SoundTouch worklet, license).
+    
+    Inserts the Mount at `app.routes[0]` so it's matched BEFORE any catch-all
+    routes FastHTML may have registered. Returns the URL where the SoundTouch
+    worklet processor is served; when `mount_path` is the default the URL equals
+    `DEFAULT_WORKLET_URL` — so `WebAudioConfig(enable_speed=True)` with no explicit
+    `worklet_url` just works.
+    """
+```
+
+#### Variables
+
+``` python
+DEFAULT_STATIC_MOUNT_PATH = '/static/cjm-web-audio'
+```
+
 ### js (`js.ipynb`)
 
 > JavaScript generation for the Web Audio API manager
@@ -83,6 +107,7 @@ def render_web_audio_script(
 
 ``` python
 from cjm_fasthtml_web_audio.js import (
+    DEFAULT_WORKLET_URL,
     generate_state_init,
     generate_init_audio,
     generate_stop_audio,
@@ -107,7 +132,13 @@ def generate_state_init(
 def generate_init_audio(
     config: WebAudioConfig,  # Instance configuration
 ) -> str:  # JS init function
-    "Generate JS function that loads and decodes audio files in parallel."
+    """
+    Generate JS function that loads and decodes audio files in parallel.
+    
+    When `config.enable_speed=True`, the SoundTouch worklet processor is registered
+    on the AudioContext before decoding. On registration failure, `workletRegistered`
+    remains false and the play path falls back to naive (pitch-shifting) playbackRate.
+    """
 ```
 
 ``` python
@@ -122,7 +153,14 @@ def generate_play_segment(
     config: WebAudioConfig,  # Instance configuration
     nav_down_btn_id: str = "",  # Nav down button ID (for auto-navigate)
 ) -> str:  # JS play function
-    "Generate JS function that plays a segment from a specific buffer."
+    """
+    Generate JS function that plays a segment from a specific buffer.
+    
+    When `config.enable_speed=True` and speed != 1.0 and the SoundTouch worklet is
+    registered, audio flows BufferSource -> SoundTouchNode -> destination, with
+    pitch auto-compensated by the worklet so tempo changes preserve pitch. Otherwise
+    audio flows BufferSource -> destination (naive path; pitch shifts at non-1x).
+    """
 ```
 
 ``` python
@@ -164,6 +202,12 @@ def generate_web_audio_js(
     "Generate the complete Web Audio API JS for a configured instance."
 ```
 
+#### Variables
+
+``` python
+DEFAULT_WORKLET_URL = '/static/cjm-web-audio/soundtouch-processor.js'
+```
+
 ### models (`models.ipynb`)
 
 > Configuration and HTML ID types for the Web Audio API manager
@@ -189,10 +233,11 @@ class WebAudioConfig:
     data_index_attr: str = 'audioFileIndex'  # Data attr name for buffer index
     data_start_attr: str = 'startTime'  # Data attr name for start time
     data_end_attr: str = 'endTime'  # Data attr name for end time
-    enable_speed: bool = False  # Playback speed support
+    enable_speed: bool = False  # Playback speed support (pitch-preserving via SoundTouch worklet)
     enable_replay: bool = False  # Replay current segment support
     enable_auto_nav: bool = False  # Auto-navigate on completion support
     should_play_fn: str = ''  # Named window function for custom play guard (replaces default zone guard)
+    worklet_url: Optional[str]  # URL of vendored soundtouch-processor.js; None -> default mount path
     
     def ns(self) -> str:  # Capitalized namespace for JS function names
             """Capitalized namespace for JS function names (e.g., 'align' -> 'Align')."""

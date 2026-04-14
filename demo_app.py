@@ -37,7 +37,11 @@ from cjm_fasthtml_app_core.core.htmx import handle_htmx_request
 
 # Web Audio library
 from cjm_fasthtml_web_audio.models import WebAudioConfig
-from cjm_fasthtml_web_audio.components import render_audio_urls_input, render_web_audio_script
+from cjm_fasthtml_web_audio.components import (
+    render_audio_urls_input,
+    render_web_audio_script,
+    mount_web_audio_static,
+)
 
 
 # =============================================================================
@@ -252,6 +256,9 @@ def main():
         session_cookie=f'session_{APP_ID}_',
         secret_key=f'{APP_ID}-demo-secret',
     )
+
+    # Mount vendored static assets (SoundTouch worklet for pitch-preserving speed)
+    mount_web_audio_static(app)
 
     router = APIRouter(prefix="")
     audio_router = APIRouter(prefix="/audio")

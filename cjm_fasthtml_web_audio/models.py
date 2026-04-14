@@ -7,6 +7,7 @@ __all__ = ['WebAudioConfig', 'WebAudioHtmlIds']
 
 # %% ../nbs/models.ipynb #c3d4e5f6
 from dataclasses import dataclass
+from typing import Optional
 
 # %% ../nbs/models.ipynb #e5f6a7b8
 @dataclass
@@ -17,10 +18,11 @@ class WebAudioConfig:
     data_index_attr: str = "audioFileIndex"     # Data attr name for buffer index
     data_start_attr: str = "startTime"          # Data attr name for start time
     data_end_attr: str = "endTime"              # Data attr name for end time
-    enable_speed: bool = False                  # Playback speed support
+    enable_speed: bool = False                  # Playback speed support (pitch-preserving via SoundTouch worklet)
     enable_replay: bool = False                 # Replay current segment support
     enable_auto_nav: bool = False               # Auto-navigate on completion support
     should_play_fn: str = ""                    # Named window function for custom play guard (replaces default zone guard)
+    worklet_url: Optional[str] = None           # URL of vendored soundtouch-processor.js; None -> default mount path
 
     @property
     def ns(self) -> str:  # Capitalized namespace for JS function names

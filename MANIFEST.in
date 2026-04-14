@@ -1,5 +1,7 @@
-include settings.ini
 include LICENSE
 include CONTRIBUTING.md
 include README.md
+recursive-include cjm_fasthtml_web_audio/static *.js
+recursive-include cjm_fasthtml_web_audio/static *.js.map
+recursive-include cjm_fasthtml_web_audio/static LICENSE.*
 recursive-exclude * __pycache__
