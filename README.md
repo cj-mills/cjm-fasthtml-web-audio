@@ -245,7 +245,7 @@ def generate_speed_change_js(
 ``` python
 def generate_focus_change(
     config: WebAudioConfig,  # Instance configuration
-    focus_input_id: str,  # Hidden input ID for focused index
+    focus_input_id: str,  # Hidden input ID for focused index (kept for API compat; no longer written to)
 ) -> str:  # JS focus change callback
     "Generate JS focus change callback for card stack integration."
 ```

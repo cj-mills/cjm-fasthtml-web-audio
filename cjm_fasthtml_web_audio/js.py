@@ -390,7 +390,7 @@ def generate_speed_change_js(
 # %% ../nbs/js.ipynb #c5d6e7f8
 def generate_focus_change(
     config: WebAudioConfig,  # Instance configuration
-    focus_input_id: str,  # Hidden input ID for focused index
+    focus_input_id: str,  # Hidden input ID for focused index (kept for API compat; no longer written to)
 ) -> str:  # JS focus change callback
     """Generate JS focus change callback for card stack integration."""
     sk = config.state_key
@@ -400,39 +400,45 @@ def generate_focus_change(
     start_attr = config.data_start_attr
     end_attr = config.data_end_attr
     indicator_sel = config.indicator_selector
-    
+
+    # NOTE: Previously this callback wrote `fi.value = index` to the focus_input_id
+    # Hidden. That was incorrect: the keyboard library's `index` param is the
+    # zone-internal item index (always 0 for card-stack integration, since only
+    # the item carrying data-card-role='focused' is in the zone's items list).
+    # Writing 0 clobbered the card-stack library's fresh OOB-authoritative value
+    # every time focus changed, breaking anything that reads the Hidden
+    # client-side (e.g., the card-stack boundary no-op guard introduced in
+    # cjm-fasthtml-card-stack 0.0.41). The absolute index is still read below
+    # from item.dataset for playback purposes; the Hidden input is now left to
+    # its OOB-authoritative state.
     return f"""window.on{ns}FocusChange = function(item, index, zoneId) {{
         var s = window.{sk};
-        
-        // Update hidden input
-        var fi = document.getElementById('{focus_input_id}');
-        if (fi) fi.value = index;
-        
+
         var currentIndex = parseInt(item.dataset.segmentIndex || item.dataset.chunkIndex || index, 10);
-        
+
         // Skip replay of same card
         if (s.lastPlayedIndex === currentIndex) {{
             if (window.{dbg}) console.log('[{ns}Audio] Same card, skipping replay');
             return;
         }}
         s.lastPlayedIndex = currentIndex;
-        
+
         // Hide all indicators
         document.querySelectorAll('{indicator_sel}').forEach(function(el) {{
             el.style.visibility = 'hidden';
         }});
-        
+
         // Read data attributes
         var startTime = parseFloat(item.dataset.{start_attr});
         var endTime = parseFloat(item.dataset.{end_attr});
         var bufferIndex = parseInt(item.dataset.{idx_attr} || '0', 10);
-        
+
         if (isNaN(startTime) || isNaN(endTime) || endTime <= startTime) return;
-        
+
         // Show indicator on current card
         var indicator = item.querySelector('{indicator_sel}');
         if (indicator) indicator.style.visibility = 'visible';
-        
+
         window.play{ns}Segment(bufferIndex, startTime, endTime, indicator);
     }};"""
 
