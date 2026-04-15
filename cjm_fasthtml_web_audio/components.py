@@ -4,19 +4,29 @@
 
 # %% auto #0
 __all__ = ['DEFAULT_STATIC_MOUNT_PATH', 'render_audio_urls_input', 'render_web_audio_script', 'mount_web_audio_static',
-           'render_initial_speed_sync']
+           'render_initial_speed_sync', 'render_speed_selector']
 
 # %% ../nbs/components.ipynb #c3d4e5f6
 import json
 from importlib.resources import files as _pkg_files
-from typing import Any, List
+from typing import Any, List, Optional
 
-from fasthtml.common import Input, Script
+from fasthtml.common import Div, Input, Label, Option, Script, Select, Span
 from starlette.routing import Mount
 from starlette.staticfiles import StaticFiles
 
+# DaisyUI components
+from cjm_fasthtml_daisyui.components.data_input.select import select, select_sizes
+from cjm_fasthtml_daisyui.utilities.semantic_colors import text_dui
+
+# Tailwind utilities
+from cjm_fasthtml_tailwind.utilities.spacing import m
+from cjm_fasthtml_tailwind.utilities.typography import font_size
+from cjm_fasthtml_tailwind.utilities.flexbox_and_grid import flex_display, items
+from cjm_fasthtml_tailwind.core.base import combine_classes
+
 from .models import WebAudioConfig, WebAudioHtmlIds
-from .js import generate_web_audio_js, DEFAULT_WORKLET_URL
+from .js import generate_web_audio_js, DEFAULT_WORKLET_URL, PLAYBACK_SPEEDS
 
 # %% ../nbs/components.ipynb #e5f6a7b8
 def render_audio_urls_input(
@@ -101,3 +111,55 @@ def render_initial_speed_sync(
       apply();
     }})();
     """)
+
+# %% ../nbs/components.ipynb #407682f8
+def render_speed_selector(
+    config: WebAudioConfig,          # Instance configuration (must have enable_speed=True for sync to fire)
+    current_speed: float = 1.0,      # Current / persisted playback speed
+    change_url: str = "",            # URL to POST speed changes to (empty → no server persist)
+    label: Optional[str] = "Speed:", # Leading label text (None/"" → omit label span)
+) -> Any:                            # Div(Span?, Select, sync Script)
+    """Render the shared playback speed selector.
+
+    Emits a DaisyUI `<select>` whose `onchange` calls `window.set{Ns}Speed(...)` for
+    immediate JS state update. When `change_url` is provided, also POSTs to that URL
+    via HTMX for server-side persistence (consumers typically return `Script(generate_speed_change_js(...))`).
+
+    Also emits `render_initial_speed_sync(config, current_speed)` so the JS state
+    reconciles to `current_speed` on initial render and OOB swaps — the `<option selected>`
+    attribute only restores the dropdown visually.
+    """
+    ns = config.ns
+    options = [
+        Option(lbl, value=str(s), selected=(s == current_speed))
+        for s, lbl in PLAYBACK_SPEEDS
+    ]
+
+    htmx_attrs = {}
+    if change_url:
+        htmx_attrs = {
+            "hx_post": change_url,
+            "hx_trigger": "change",
+            "hx_swap": "none",
+        }
+
+    onchange_js = f"if(window.set{ns}Speed) window.set{ns}Speed(parseFloat(this.value));"
+
+    children = []
+    if label:
+        children.append(Span(
+            label,
+            cls=combine_classes(font_size.sm, text_dui.base_content.opacity(70), m.r(2)),
+        ))
+    children.append(Select(
+        *options,
+        id=WebAudioHtmlIds.speed_select(config.namespace),
+        name="speed",
+        cls=combine_classes(select, select_sizes.sm),
+        onchange=onchange_js,
+        **htmx_attrs,
+    ))
+    # Sync JS state to current_speed (no-op when speed == 1.0 or enable_speed is False)
+    children.append(render_initial_speed_sync(config, current_speed))
+
+    return Div(*children, cls=combine_classes(flex_display, items.center))

@@ -40,6 +40,7 @@ from cjm_fasthtml_web_audio.models import WebAudioConfig
 from cjm_fasthtml_web_audio.components import (
     render_audio_urls_input,
     render_web_audio_script,
+    render_speed_selector,
     mount_web_audio_static,
 )
 
@@ -159,12 +160,9 @@ def render_demo_page(audio_files, audio_urls):
         )
 
         # ----- Instance 2: Review (full features) -----
-        speed_select = Select(
-            *[Option(f"{s}x", value=str(s), selected=(s == 1.0))
-              for s in [0.5, 0.75, 1.0, 1.25, 1.5, 2.0, 3.0]],
-            cls=combine_classes("select select-bordered select-xs"),
-            onchange="window.setReviewSpeed(parseFloat(this.value))",
-        )
+        # Uses the library's shared render_speed_selector — namespace, select ID,
+        # onchange JS, and initial-speed sync are all derived from REVIEW_CONFIG.
+        speed_select = render_speed_selector(REVIEW_CONFIG)
 
         review_section = Div(
             Div(
@@ -181,7 +179,6 @@ def render_demo_page(audio_files, audio_urls):
                        onclick="window.stopReviewAudio()"),
                 Button("Replay", cls=combine_classes(btn, btn_colors.secondary, btn_sizes.sm),
                        onclick="window.replayReviewSegment()"),
-                Span("Speed:", cls=combine_classes(font_size.sm, m.l(2))),
                 speed_select,
                 Label(
                     Input(type="checkbox", cls="checkbox checkbox-xs",

@@ -44,3 +44,10 @@ class WebAudioHtmlIds:
     ) -> str:  # HTML ID for audio URLs hidden input
         """ID for the hidden input storing audio file URLs as JSON."""
         return f"sd-{namespace}-audio-urls"
+
+    @staticmethod
+    def speed_select(
+        namespace: str  # Instance namespace
+    ) -> str:  # HTML ID for the playback speed <select>
+        """ID for the playback speed selector element."""
+        return f"sd-{namespace}-speed-select"

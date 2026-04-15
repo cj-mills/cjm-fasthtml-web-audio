@@ -26,8 +26,8 @@ graph LR
     js[js<br/>js]
     models[models<br/>models]
 
-    components --> models
     components --> js
+    components --> models
     js --> models
 ```
 
@@ -53,7 +53,8 @@ from cjm_fasthtml_web_audio.components import (
     render_audio_urls_input,
     render_web_audio_script,
     mount_web_audio_static,
-    render_initial_speed_sync
+    render_initial_speed_sync,
+    render_speed_selector
 )
 ```
 
@@ -109,6 +110,26 @@ def render_initial_speed_sync(
     """
 ```
 
+``` python
+def render_speed_selector(
+    config: WebAudioConfig,          # Instance configuration (must have enable_speed=True for sync to fire)
+    current_speed: float = 1.0,      # Current / persisted playback speed
+    change_url: str = "",            # URL to POST speed changes to (empty → no server persist)
+    label: Optional[str] = "Speed:", # Leading label text (None/"" → omit label span)
+) -> Any:                            # Div(Span?, Select, sync Script)
+    """
+    Render the shared playback speed selector.
+    
+    Emits a DaisyUI `<select>` whose `onchange` calls `window.set{Ns}Speed(...)` for
+    immediate JS state update. When `change_url` is provided, also POSTs to that URL
+    via HTMX for server-side persistence (consumers typically return `Script(generate_speed_change_js(...))`).
+    
+    Also emits `render_initial_speed_sync(config, current_speed)` so the JS state
+    reconciles to `current_speed` on initial render and OOB swaps — the `<option selected>`
+    attribute only restores the dropdown visually.
+    """
+```
+
 #### Variables
 
 ``` python
@@ -124,11 +145,13 @@ DEFAULT_STATIC_MOUNT_PATH = '/static/cjm-web-audio'
 ``` python
 from cjm_fasthtml_web_audio.js import (
     DEFAULT_WORKLET_URL,
+    PLAYBACK_SPEEDS,
     generate_state_init,
     generate_init_audio,
     generate_stop_audio,
     generate_play_segment,
     generate_optional_features,
+    generate_speed_change_js,
     generate_focus_change,
     generate_htmx_settle_handler,
     generate_web_audio_js
@@ -180,10 +203,43 @@ def generate_play_segment(
 ```
 
 ``` python
+def _speed_values_js_array() -> str:  # JS array literal of speed values
+    """Render PLAYBACK_SPEEDS values as a JS array literal (e.g., '[0.5, 0.75, ...]')."""
+    return "[" + ", ".join(str(s) for s, _ in PLAYBACK_SPEEDS) + "]"
+
+
 def generate_optional_features(
     config: WebAudioConfig,  # Instance configuration
 ) -> str:  # JS for optional feature functions (empty if none enabled)
-    "Generate JS for optional features based on config flags."
+    "Render PLAYBACK_SPEEDS values as a JS array literal (e.g., '[0.5, 0.75, ...]')."
+```
+
+``` python
+def generate_optional_features(
+    config: WebAudioConfig,  # Instance configuration
+) -> str:  # JS for optional feature functions (empty if none enabled)
+    """
+    Generate JS for optional features based on config flags.
+    
+    When `config.enable_speed=True`, emits `set{Ns}Speed`, `cycle{Ns}SpeedTo`,
+    `cycle{Ns}SpeedUp`, `cycle{Ns}SpeedDown`. The cycle helpers drive the shared
+    speed `<select>` via a synthetic `change` event so the dropdown, JS state, and
+    HTMX-backed server persistence stay in sync through a single code path.
+    """
+```
+
+``` python
+def generate_speed_change_js(
+    config: WebAudioConfig,  # Instance configuration
+    speed: float,            # New playback speed
+) -> str:  # JS snippet: updates JS playbackSpeed via set{Ns}Speed
+    """
+    Generate the JS body returned by a consumer's `/speed_change` POST handler.
+    
+    Consumers wrap this in a `Script(...)` and return it so the client-side state
+    updates after the server persists the new speed. Guarded with `if (window.set{Ns}Speed)`
+    to tolerate the Script running before the web-audio script initializes.
+    """
 ```
 
 ``` python
@@ -222,6 +278,7 @@ def generate_web_audio_js(
 
 ``` python
 DEFAULT_WORKLET_URL = '/static/cjm-web-audio/soundtouch-processor.js'
+PLAYBACK_SPEEDS = [8 items]
 ```
 
 ### models (`models.ipynb`)
@@ -275,4 +332,9 @@ class WebAudioHtmlIds:
             namespace: str  # Instance namespace
         ) -> str:  # HTML ID for audio URLs hidden input
         "ID for the hidden input storing audio file URLs as JSON."
+    
+    def speed_select(
+            namespace: str  # Instance namespace
+        ) -> str:  # HTML ID for the playback speed <select>
+        "ID for the playback speed selector element."
 ```
