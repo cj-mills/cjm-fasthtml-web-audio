@@ -25,7 +25,7 @@ cjm_fasthtml_web_audio = "cjm_fasthtml_web_audio._modidx:d"
 version = {attr = "cjm_fasthtml_web_audio.__version__"}
 
 [tool.setuptools.packages.find]
-include = ["cjm_fasthtml_web_audio"]
+include = ["cjm_fasthtml_web_audio*"]
 
 [tool.setuptools.package-data]
 "cjm_fasthtml_web_audio" = ["static/*.js", "static/*.js.map", "static/LICENSE.*"]
