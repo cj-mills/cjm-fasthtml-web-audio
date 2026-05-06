@@ -19,6 +19,8 @@ from starlette.staticfiles import StaticFiles
 from cjm_fasthtml_daisyui.components.data_input.select import select, select_sizes
 from cjm_fasthtml_daisyui.utilities.semantic_colors import text_dui
 
+from cjm_fasthtml_design_system.text_tiers import text_tiers
+
 # Tailwind utilities
 from cjm_fasthtml_tailwind.utilities.spacing import m
 from cjm_fasthtml_tailwind.utilities.typography import font_size
@@ -149,7 +151,7 @@ def render_speed_selector(
     if label:
         children.append(Span(
             label,
-            cls=combine_classes(font_size.sm, text_dui.base_content.opacity(70), m.r(2)),
+            cls=combine_classes(font_size.sm, text_tiers.secondary, m.r(2)),
         ))
     children.append(Select(
         *options,

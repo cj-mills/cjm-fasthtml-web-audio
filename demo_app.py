@@ -21,6 +21,8 @@ from cjm_fasthtml_daisyui.components.actions.button import btn, btn_sizes, btn_c
 from cjm_fasthtml_daisyui.components.data_display.badge import badge, badge_styles, badge_sizes, badge_colors
 from cjm_fasthtml_daisyui.utilities.semantic_colors import bg_dui, text_dui, border_dui
 
+from cjm_fasthtml_design_system.text_tiers import text_tiers
+
 # Tailwind utilities
 from cjm_fasthtml_tailwind.utilities.spacing import p, m
 from cjm_fasthtml_tailwind.utilities.sizing import w, h, max_w, container
@@ -82,7 +84,7 @@ def build_segment_card(i, audio_file, namespace):
             Span(f"#{i}", cls=combine_classes(font_weight.bold, font_family.mono)),
             Span(
                 audio_file.name,
-                cls=combine_classes(font_size.sm, text_dui.base_content.opacity(60), font_family.mono),
+                cls=combine_classes(font_size.sm, text_tiers.tertiary, font_family.mono),
             ),
             Span(
                 "playing",
@@ -121,7 +123,7 @@ def build_segment_list(audio_files, namespace, max_display=6):
     if len(cards) > max_display:
         display.append(
             P(f"... and {len(cards) - max_display} more",
-              cls=combine_classes(font_size.xs, text_dui.base_content.opacity(50), p(2)))
+              cls=combine_classes(font_size.xs, text_tiers.muted, p(2)))
         )
     return Div(*display, cls=combine_classes(flex_display, flex_direction.col, gap(1)))
 
@@ -144,7 +146,7 @@ def render_demo_page(audio_files, audio_urls):
                 cls=combine_classes(flex_display, items.center, gap(2), m.b(2)),
             ),
             P("No speed/replay/auto-nav. Simulates alignment playback.",
-              cls=combine_classes(font_size.sm, text_dui.base_content.opacity(60), m.b(3))),
+              cls=combine_classes(font_size.sm, text_tiers.tertiary, m.b(3))),
             Div(
                 Button("Load Audio", cls=combine_classes(btn, btn_colors.primary, btn_sizes.sm),
                        onclick="window.initBasicAudio()"),
@@ -171,7 +173,7 @@ def render_demo_page(audio_files, audio_urls):
                 cls=combine_classes(flex_display, items.center, gap(2), m.b(2)),
             ),
             P("Speed control, replay, auto-navigate enabled. Simulates review playback.",
-              cls=combine_classes(font_size.sm, text_dui.base_content.opacity(60), m.b(3))),
+              cls=combine_classes(font_size.sm, text_tiers.tertiary, m.b(3))),
             Div(
                 Button("Load Audio", cls=combine_classes(btn, btn_colors.primary, btn_sizes.sm),
                        onclick="window.initReviewAudio()"),
@@ -202,7 +204,7 @@ def render_demo_page(audio_files, audio_urls):
             H1("Web Audio API — Dual Instance Demo",
                cls=combine_classes(font_size._3xl, font_weight.bold, m.b(2))),
             P(f"{len(audio_files)} audio segments. Two independent instances with separate namespaces.",
-              cls=combine_classes(text_dui.base_content.opacity(70), m.b(6))),
+              cls=combine_classes(text_tiers.secondary, m.b(6))),
 
             # Two-column layout
             Div(
