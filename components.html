@@ -1,0 +1,868 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.9.37">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="description" content="FastHTML component helpers for the Web Audio API manager">
+
+<title>components – cjm-fasthtml-web-audio</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-7f8f88aac4f3542376d5c11b86a4c14d.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-62a0fb827630e33fd95d729094ca943e.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+
+<link rel="stylesheet" href="styles.css">
+<meta property="og:title" content="components – cjm-fasthtml-web-audio">
+<meta property="og:description" content="FastHTML component helpers for the Web Audio API manager">
+<meta property="og:site_name" content="cjm-fasthtml-web-audio">
+<meta name="twitter:title" content="components – cjm-fasthtml-web-audio">
+<meta name="twitter:description" content="FastHTML component helpers for the Web Audio API manager">
+<meta name="twitter:card" content="summary">
+</head>
+
+<body class="nav-sidebar floating nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="./index.html">
+    <span class="navbar-title">cjm-fasthtml-web-audio</span>
+    </a>
+  </div>
+        <div class="quarto-navbar-tools tools-end">
+</div>
+          <div id="quarto-search" class="" title="Search"></div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./components.html">components</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">cjm-fasthtml-web-audio</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./components.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">components</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./js.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">js</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./models.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">models</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#audio-urls-input" id="toc-audio-urls-input" class="nav-link active" data-scroll-target="#audio-urls-input">Audio URLs Input</a>
+  <ul class="collapse">
+  <li><a href="#render_audio_urls_input" id="toc-render_audio_urls_input" class="nav-link" data-scroll-target="#render_audio_urls_input">render_audio_urls_input</a></li>
+  </ul></li>
+  <li><a href="#web-audio-script" id="toc-web-audio-script" class="nav-link" data-scroll-target="#web-audio-script">Web Audio Script</a>
+  <ul class="collapse">
+  <li><a href="#render_web_audio_script" id="toc-render_web_audio_script" class="nav-link" data-scroll-target="#render_web_audio_script">render_web_audio_script</a></li>
+  </ul></li>
+  <li><a href="#mount-static-assets" id="toc-mount-static-assets" class="nav-link" data-scroll-target="#mount-static-assets">Mount Static Assets</a>
+  <ul class="collapse">
+  <li><a href="#mount_web_audio_static" id="toc-mount_web_audio_static" class="nav-link" data-scroll-target="#mount_web_audio_static">mount_web_audio_static</a></li>
+  </ul></li>
+  <li><a href="#initial-speed-sync" id="toc-initial-speed-sync" class="nav-link" data-scroll-target="#initial-speed-sync">Initial Speed Sync</a>
+  <ul class="collapse">
+  <li><a href="#render_initial_speed_sync" id="toc-render_initial_speed_sync" class="nav-link" data-scroll-target="#render_initial_speed_sync">render_initial_speed_sync</a></li>
+  </ul></li>
+  <li><a href="#speed-selector" id="toc-speed-selector" class="nav-link" data-scroll-target="#speed-selector">Speed Selector</a>
+  <ul class="collapse">
+  <li><a href="#render_speed_selector" id="toc-render_speed_selector" class="nav-link" data-scroll-target="#render_speed_selector">render_speed_selector</a></li>
+  </ul></li>
+  <li><a href="#tests" id="toc-tests" class="nav-link" data-scroll-target="#tests">Tests</a></li>
+  </ul>
+<div class="toc-actions"><ul><li><a href="https://github.com/cj-mills/cjm-fasthtml-web-audio/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li></ul></div><div class="quarto-alternate-formats"><h2>Other Formats</h2><ul><li><a href="components.html.md"><i class="bi bi-file-code"></i>CommonMark</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">components</h1>
+</div>
+
+<div>
+  <div class="description">
+    FastHTML component helpers for the Web Audio API manager
+  </div>
+</div>
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<!-- WARNING: THIS FILE WAS AUTOGENERATED! DO NOT EDIT! -->
+<section id="audio-urls-input" class="level2">
+<h2 class="anchored" data-anchor-id="audio-urls-input">Audio URLs Input</h2>
+<p>Hidden input that stores audio file URLs as a JSON array. The JS init function reads from this element to know which files to fetch and decode.</p>
+<hr>
+<section id="render_audio_urls_input" class="level3">
+<h3 class="anchored" data-anchor-id="render_audio_urls_input">render_audio_urls_input</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> render_audio_urls_input(</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    config:WebAudioConfig, <span class="co"># Instance configuration</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    audio_urls:List, <span class="co"># Audio file URLs to load</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    oob:<span class="bu">bool</span><span class="op">=</span><span class="va">False</span>, <span class="co"># Whether to render as OOB swap</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>)<span class="op">-&gt;</span>Any: <span class="co"># Hidden input element with JSON-encoded URLs</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><em>Render a hidden input storing audio URLs as JSON.</em></p>
+</section>
+</section>
+<section id="web-audio-script" class="level2">
+<h2 class="anchored" data-anchor-id="web-audio-script">Web Audio Script</h2>
+<p>Assembles the complete JS into a FastHTML Script element.</p>
+<hr>
+<section id="render_web_audio_script" class="level3">
+<h3 class="anchored" data-anchor-id="render_web_audio_script">render_web_audio_script</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> render_web_audio_script(</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    config:WebAudioConfig, <span class="co"># Instance configuration</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    focus_input_id:<span class="bu">str</span>, <span class="co"># Hidden input ID for focused index</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    card_stack_id:<span class="bu">str</span>, <span class="co"># Card stack container ID</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>    nav_down_btn_id:<span class="bu">str</span><span class="op">=</span><span class="st">''</span>, <span class="co"># Nav down button ID (for auto-navigate)</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>)<span class="op">-&gt;</span>Any: <span class="co"># Script element with complete Web Audio JS</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><em>Render the complete Web Audio API script for a configured instance.</em></p>
+</section>
+</section>
+<section id="mount-static-assets" class="level2">
+<h2 class="anchored" data-anchor-id="mount-static-assets">Mount Static Assets</h2>
+<p>Mounts the library’s vendored static directory (containing the SoundTouch worklet processor and its license) at a configurable URL path. Host apps call this once at startup when using <code>enable_speed=True</code>. Returns the URL of the SoundTouch worklet so consumers can pass it into <code>WebAudioConfig.worklet_url</code> if they mount somewhere non-default.</p>
+<hr>
+<section id="mount_web_audio_static" class="level3">
+<h3 class="anchored" data-anchor-id="mount_web_audio_static">mount_web_audio_static</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> mount_web_audio_static(</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    app, <span class="co"># FastHTML/Starlette app</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    mount_path:<span class="bu">str</span><span class="op">=</span><span class="st">'/static/cjm-web-audio'</span>, <span class="co"># URL prefix to mount static dir at</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>)<span class="op">-&gt;</span><span class="bu">str</span>: <span class="co"># URL of the SoundTouch worklet processor</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><em>Mount the library’s vendored static assets (SoundTouch worklet, license).</em></p>
+<p>Inserts the Mount at <code>app.routes[0]</code> so it’s matched BEFORE any catch-all routes FastHTML may have registered. Returns the URL where the SoundTouch worklet processor is served; when <code>mount_path</code> is the default the URL equals <code>DEFAULT_WORKLET_URL</code> — so <code>WebAudioConfig(enable_speed=True)</code> with no explicit <code>worklet_url</code> just works.</p>
+</section>
+</section>
+<section id="initial-speed-sync" class="level2">
+<h2 class="anchored" data-anchor-id="initial-speed-sync">Initial Speed Sync</h2>
+<p>Syncs the web-audio JS state (<code>window._webAudio_{namespace}.playbackSpeed</code>) to a persisted speed value after render. Works around <code>generate_state_init</code> unconditionally resetting <code>playbackSpeed</code> to 1.0 every time the script re-executes — the <code>&lt;option selected&gt;</code> attribute on a speed selector only restores the dropdown visually, so the actual JS state must be synced explicitly when it should be something other than 1.0.</p>
+<p>Typical use: emit alongside a speed selector whenever the current/persisted speed differs from 1.0. Callers on step pages, chrome switches, and HTMX OOB swaps all benefit because the helper polls briefly for <code>window.set{Ns}Speed</code> — robust to script execution order between toolbar (caller) and column body (web-audio script).</p>
+<hr>
+<section id="render_initial_speed_sync" class="level3">
+<h3 class="anchored" data-anchor-id="render_initial_speed_sync">render_initial_speed_sync</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> render_initial_speed_sync(</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    config:WebAudioConfig, <span class="co"># Instance configuration</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    speed:<span class="bu">float</span>, <span class="co"># Persisted playback speed (e.g. from step state)</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>)<span class="op">-&gt;</span>Any: <span class="co"># Script element (empty if speed is default or speed is disabled)</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+*Render a
+<script>
+<p>that syncs the JS state’s playbackSpeed to <code>speed</code> after insertion.*</p>
+<p>Polls briefly (~1 second, 20ms intervals) for <code>window.set{Ns}Speed</code> so the helper works regardless of whether the web-audio script or the toolbar script runs first. Returns an empty Script when <code>speed == 1.0</code> (state_init already defaults to 1.0) or when <code>config.enable_speed</code> is False.</p>
+</section>
+</section>
+<section id="speed-selector" class="level2">
+<h2>Speed Selector</h2>
+<p>Shared <code>&lt;select&gt;</code>-based playback speed picker for Web Audio managers. Takes a <code>WebAudioConfig</code> (namespace → derives select ID, <code>set{Ns}Speed</code> call, sync config) plus the current speed and an optional change URL for HTMX-backed server persistence.</p>
+<p>Pairs naturally with the keyboard-driven <code>cycle{Ns}SpeedUp</code> / <code>cycle{Ns}SpeedDown</code> helpers emitted by <code>generate_optional_features</code> — those dispatch a synthetic <code>change</code> event on the select, so the dropdown, JS state, and server persistence all update through the same plumbing whether the user clicks the dropdown or presses a shortcut.</p>
+<hr />
+<section id="render_speed_selector" class="level3">
+<h3>render_speed_selector</h3>
+<div class="sourceCode" id="cb5"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> render_speed_selector(</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    config:WebAudioConfig, <span class="co"># Instance configuration (must have enable_speed=True for sync to fire)</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>    current_speed:<span class="bu">float</span><span class="op">=</span><span class="fl">1.0</span>, <span class="co"># Current / persisted playback speed</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>    change_url:<span class="bu">str</span><span class="op">=</span><span class="st">&#39;&#39;</span>, <span class="co"># URL to POST speed changes to (empty → no server persist)</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>    label:Optional<span class="op">=</span><span class="st">&#39;Speed:&#39;</span>, <span class="co"># Leading label text (None/&quot;&quot; → omit label span)</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>)<span class="op">-&gt;</span>Any: <span class="co"># Div(Span?, Select, sync Script)</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a></span></code></pre></div>
+<p><em>Render the shared playback speed selector.</em></p>
+<p>Emits a DaisyUI <code>&lt;select&gt;</code> whose <code>onchange</code> calls <code>window.set{Ns}Speed(...)</code> for immediate JS state update. When <code>change_url</code> is provided, also POSTs to that URL via HTMX for server-side persistence (consumers typically return <code>Script(generate_speed_change_js(...))</code>).</p>
+<p>Also emits <code>render_initial_speed_sync(config, current_speed)</code> so the JS state reconciles to <code>current_speed</code> on initial render and OOB swaps — the <code>&lt;option selected&gt;</code> attribute only restores the dropdown visually.</p>
+</section>
+</section>
+<section id="tests" class="level2">
+<h2>Tests</h2>
+<div id="c9d0e1f2" class="cell">
+<div class="sourceCode" id="cb6"><pre class="sourceCode python cell-code"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> fasthtml.common <span class="im">import</span> to_xml, FastHTML</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>cfg <span class="op">=</span> WebAudioConfig(namespace<span class="op">=</span><span class="st">&quot;demo&quot;</span>, indicator_selector<span class="op">=</span><span class="st">&quot;.demo-indicator&quot;</span>)</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Test audio URLs input</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>urls_input <span class="op">=</span> render_audio_urls_input(cfg, [<span class="st">&quot;/audio/file1.mp3&quot;</span>, <span class="st">&quot;/audio/file2.mp3&quot;</span>])</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>html <span class="op">=</span> to_xml(urls_input)</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="st">&#39;id=&quot;sd-demo-audio-urls&quot;&#39;</span> <span class="kw">in</span> html</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="st">&#39;/audio/file1.mp3&#39;</span> <span class="kw">in</span> html</span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="st">&#39;/audio/file2.mp3&#39;</span> <span class="kw">in</span> html</span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="st">&#39;type=&quot;hidden&quot;&#39;</span> <span class="kw">in</span> html</span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Test OOB mode</span></span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>oob_input <span class="op">=</span> render_audio_urls_input(cfg, [<span class="st">&quot;/audio/file1.mp3&quot;</span>], oob<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>oob_html <span class="op">=</span> to_xml(oob_input)</span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="st">&#39;hx-swap-oob=&quot;true&quot;&#39;</span> <span class="kw">in</span> oob_html</span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a><span class="co"># Test script rendering</span></span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a>script <span class="op">=</span> render_web_audio_script(cfg, focus_input_id<span class="op">=</span><span class="st">&quot;demo-focus&quot;</span>, card_stack_id<span class="op">=</span><span class="st">&quot;demo-cs&quot;</span>)</span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a>script_html <span class="op">=</span> to_xml(script)</span>
+<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="st">&#39;initDemoAudio&#39;</span> <span class="kw">in</span> script_html</span>
+<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="st">&#39;playDemoSegment&#39;</span> <span class="kw">in</span> script_html</span>
+<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a><span class="co"># Default mount path must line up with DEFAULT_WORKLET_URL so enable_speed=True with no</span></span>
+<span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a><span class="co"># explicit worklet_url &quot;just works&quot; after mount_web_audio_static(app)</span></span>
+<span id="cb6-26"><a href="#cb6-26" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> DEFAULT_WORKLET_URL <span class="op">==</span> <span class="ss">f&quot;</span><span class="sc">{</span>DEFAULT_STATIC_MOUNT_PATH<span class="sc">}</span><span class="ss">/soundtouch-processor.js&quot;</span></span>
+<span id="cb6-27"><a href="#cb6-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-28"><a href="#cb6-28" aria-hidden="true" tabindex="-1"></a><span class="co"># Vendored worklet file is packaged and locatable</span></span>
+<span id="cb6-29"><a href="#cb6-29" aria-hidden="true" tabindex="-1"></a>static_dir <span class="op">=</span> _pkg_files(<span class="st">&quot;cjm_fasthtml_web_audio&quot;</span>) <span class="op">/</span> <span class="st">&quot;static&quot;</span></span>
+<span id="cb6-30"><a href="#cb6-30" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> (static_dir <span class="op">/</span> <span class="st">&quot;soundtouch-processor.js&quot;</span>).is_file()</span>
+<span id="cb6-31"><a href="#cb6-31" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> (static_dir <span class="op">/</span> <span class="st">&quot;LICENSE.soundtouchjs&quot;</span>).is_file()</span>
+<span id="cb6-32"><a href="#cb6-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-33"><a href="#cb6-33" aria-hidden="true" tabindex="-1"></a><span class="co"># Mount helper registers a StaticFiles route and returns the correct URL</span></span>
+<span id="cb6-34"><a href="#cb6-34" aria-hidden="true" tabindex="-1"></a>app <span class="op">=</span> FastHTML()</span>
+<span id="cb6-35"><a href="#cb6-35" aria-hidden="true" tabindex="-1"></a>url <span class="op">=</span> mount_web_audio_static(app)</span>
+<span id="cb6-36"><a href="#cb6-36" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> url <span class="op">==</span> DEFAULT_WORKLET_URL</span>
+<span id="cb6-37"><a href="#cb6-37" aria-hidden="true" tabindex="-1"></a><span class="co"># Custom mount path: returned URL reflects the override</span></span>
+<span id="cb6-38"><a href="#cb6-38" aria-hidden="true" tabindex="-1"></a>app2 <span class="op">=</span> FastHTML()</span>
+<span id="cb6-39"><a href="#cb6-39" aria-hidden="true" tabindex="-1"></a>url2 <span class="op">=</span> mount_web_audio_static(app2, mount_path<span class="op">=</span><span class="st">&quot;/assets/audio&quot;</span>)</span>
+<span id="cb6-40"><a href="#cb6-40" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> url2 <span class="op">==</span> <span class="st">&quot;/assets/audio/soundtouch-processor.js&quot;</span></span>
+<span id="cb6-41"><a href="#cb6-41" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-42"><a href="#cb6-42" aria-hidden="true" tabindex="-1"></a><span class="co"># Initial speed sync — no-op paths</span></span>
+<span id="cb6-43"><a href="#cb6-43" aria-hidden="true" tabindex="-1"></a>cfg_no_speed <span class="op">=</span> WebAudioConfig(namespace<span class="op">=</span><span class="st">&quot;plain&quot;</span>, indicator_selector<span class="op">=</span><span class="st">&quot;.ind&quot;</span>)  <span class="co"># enable_speed=False</span></span>
+<span id="cb6-44"><a href="#cb6-44" aria-hidden="true" tabindex="-1"></a>no_speed_html <span class="op">=</span> to_xml(render_initial_speed_sync(cfg_no_speed, <span class="fl">2.0</span>))</span>
+<span id="cb6-45"><a href="#cb6-45" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="st">&#39;setPlainSpeed&#39;</span> <span class="kw">not</span> <span class="kw">in</span> no_speed_html  <span class="co"># disabled config → no sync script</span></span>
+<span id="cb6-46"><a href="#cb6-46" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-47"><a href="#cb6-47" aria-hidden="true" tabindex="-1"></a>cfg_speed <span class="op">=</span> WebAudioConfig(namespace<span class="op">=</span><span class="st">&quot;align&quot;</span>, indicator_selector<span class="op">=</span><span class="st">&quot;.ind&quot;</span>, enable_speed<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb6-48"><a href="#cb6-48" aria-hidden="true" tabindex="-1"></a>at_default_html <span class="op">=</span> to_xml(render_initial_speed_sync(cfg_speed, <span class="fl">1.0</span>))</span>
+<span id="cb6-49"><a href="#cb6-49" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="st">&#39;setAlignSpeed&#39;</span> <span class="kw">not</span> <span class="kw">in</span> at_default_html  <span class="co"># speed==1.0 → state_init default is correct</span></span>
+<span id="cb6-50"><a href="#cb6-50" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-51"><a href="#cb6-51" aria-hidden="true" tabindex="-1"></a><span class="co"># Initial speed sync — active path emits a polling script</span></span>
+<span id="cb6-52"><a href="#cb6-52" aria-hidden="true" tabindex="-1"></a>sync_html <span class="op">=</span> to_xml(render_initial_speed_sync(cfg_speed, <span class="fl">2.5</span>))</span>
+<span id="cb6-53"><a href="#cb6-53" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="st">&#39;setAlignSpeed(2.5)&#39;</span> <span class="kw">in</span> sync_html</span>
+<span id="cb6-54"><a href="#cb6-54" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="st">&#39;setTimeout(apply, 20)&#39;</span> <span class="kw">in</span> sync_html</span>
+<span id="cb6-55"><a href="#cb6-55" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="st">&#39;tries++ &lt; 50&#39;</span> <span class="kw">in</span> sync_html  <span class="co"># ~1s budget</span></span>
+<span id="cb6-56"><a href="#cb6-56" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-57"><a href="#cb6-57" aria-hidden="true" tabindex="-1"></a><span class="co"># Review namespace produces setReviewSpeed</span></span>
+<span id="cb6-58"><a href="#cb6-58" aria-hidden="true" tabindex="-1"></a>cfg_review <span class="op">=</span> WebAudioConfig(namespace<span class="op">=</span><span class="st">&quot;review&quot;</span>, indicator_selector<span class="op">=</span><span class="st">&quot;.ind&quot;</span>, enable_speed<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb6-59"><a href="#cb6-59" aria-hidden="true" tabindex="-1"></a>review_sync_html <span class="op">=</span> to_xml(render_initial_speed_sync(cfg_review, <span class="fl">1.5</span>))</span>
+<span id="cb6-60"><a href="#cb6-60" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="st">&#39;setReviewSpeed(1.5)&#39;</span> <span class="kw">in</span> review_sync_html</span>
+<span id="cb6-61"><a href="#cb6-61" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-62"><a href="#cb6-62" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">&quot;All component tests passed&quot;</span>)</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>All component tests passed</code></pre>
+</div>
+</div>
+<div id="c9b41f38" class="cell">
+<div class="sourceCode" id="cb8"><pre class="sourceCode python cell-code"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># render_speed_selector tests</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>cfg_align <span class="op">=</span> WebAudioConfig(namespace<span class="op">=</span><span class="st">&quot;align&quot;</span>, indicator_selector<span class="op">=</span><span class="st">&quot;.ind&quot;</span>, enable_speed<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Default: current_speed=1.0, no change_url → 1x option selected, no HTMX attrs, no sync script</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>sel_default <span class="op">=</span> render_speed_selector(cfg_align)</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>html_default <span class="op">=</span> to_xml(sel_default)</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="st">&#39;id=&quot;sd-align-speed-select&quot;&#39;</span> <span class="kw">in</span> html_default</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="st">&#39;name=&quot;speed&quot;&#39;</span> <span class="kw">in</span> html_default</span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="st">&#39;onchange=&quot;if(window.setAlignSpeed) window.setAlignSpeed(parseFloat(this.value));&quot;&#39;</span> <span class="kw">in</span> html_default</span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Every PLAYBACK_SPEEDS option is present</span></span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> s, lbl <span class="kw">in</span> PLAYBACK_SPEEDS:</span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> <span class="ss">f&#39;value=&quot;</span><span class="sc">{</span>s<span class="sc">}</span><span class="ss">&quot;&#39;</span> <span class="kw">in</span> html_default</span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> <span class="ss">f&#39;&gt;</span><span class="sc">{</span>lbl<span class="sc">}</span><span class="ss">&lt;&#39;</span> <span class="kw">in</span> html_default</span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a><span class="co"># 1x is selected at default</span></span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="st">&#39;value=&quot;1.0&quot; selected&#39;</span> <span class="kw">in</span> html_default</span>
+<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a><span class="co"># No HTMX persistence wired when change_url is empty</span></span>
+<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="st">&#39;hx-post&#39;</span> <span class="kw">not</span> <span class="kw">in</span> html_default</span>
+<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a><span class="co"># speed==1.0 → sync script is empty (no setAlignSpeed invocation)</span></span>
+<span id="cb8-20"><a href="#cb8-20" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="st">&#39;setAlignSpeed(1.0)&#39;</span> <span class="kw">not</span> <span class="kw">in</span> html_default</span>
+<span id="cb8-21"><a href="#cb8-21" aria-hidden="true" tabindex="-1"></a><span class="co"># Speed label present</span></span>
+<span id="cb8-22"><a href="#cb8-22" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="st">&#39;&gt;Speed:&lt;&#39;</span> <span class="kw">in</span> html_default</span>
+<span id="cb8-23"><a href="#cb8-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-24"><a href="#cb8-24" aria-hidden="true" tabindex="-1"></a><span class="co"># With change_url and non-default speed: HTMX attrs present, sync script fires setAlignSpeed</span></span>
+<span id="cb8-25"><a href="#cb8-25" aria-hidden="true" tabindex="-1"></a>sel_wired <span class="op">=</span> render_speed_selector(cfg_align, current_speed<span class="op">=</span><span class="fl">1.5</span>, change_url<span class="op">=</span><span class="st">&quot;/x/speed_change&quot;</span>)</span>
+<span id="cb8-26"><a href="#cb8-26" aria-hidden="true" tabindex="-1"></a>html_wired <span class="op">=</span> to_xml(sel_wired)</span>
+<span id="cb8-27"><a href="#cb8-27" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="st">&#39;hx-post=&quot;/x/speed_change&quot;&#39;</span> <span class="kw">in</span> html_wired</span>
+<span id="cb8-28"><a href="#cb8-28" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="st">&#39;hx-trigger=&quot;change&quot;&#39;</span> <span class="kw">in</span> html_wired</span>
+<span id="cb8-29"><a href="#cb8-29" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="st">&#39;hx-swap=&quot;none&quot;&#39;</span> <span class="kw">in</span> html_wired</span>
+<span id="cb8-30"><a href="#cb8-30" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="st">&#39;value=&quot;1.5&quot; selected&#39;</span> <span class="kw">in</span> html_wired</span>
+<span id="cb8-31"><a href="#cb8-31" aria-hidden="true" tabindex="-1"></a><span class="co"># Initial sync script is emitted because speed != 1.0</span></span>
+<span id="cb8-32"><a href="#cb8-32" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="st">&#39;setAlignSpeed(1.5)&#39;</span> <span class="kw">in</span> html_wired</span>
+<span id="cb8-33"><a href="#cb8-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-34"><a href="#cb8-34" aria-hidden="true" tabindex="-1"></a><span class="co"># label=None omits the leading Span</span></span>
+<span id="cb8-35"><a href="#cb8-35" aria-hidden="true" tabindex="-1"></a>sel_nolabel <span class="op">=</span> render_speed_selector(cfg_align, label<span class="op">=</span><span class="va">None</span>)</span>
+<span id="cb8-36"><a href="#cb8-36" aria-hidden="true" tabindex="-1"></a>html_nolabel <span class="op">=</span> to_xml(sel_nolabel)</span>
+<span id="cb8-37"><a href="#cb8-37" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="st">&#39;&gt;Speed:&lt;&#39;</span> <span class="kw">not</span> <span class="kw">in</span> html_nolabel</span>
+<span id="cb8-38"><a href="#cb8-38" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="st">&#39;id=&quot;sd-align-speed-select&quot;&#39;</span> <span class="kw">in</span> html_nolabel  <span class="co"># select still there</span></span>
+<span id="cb8-39"><a href="#cb8-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-40"><a href="#cb8-40" aria-hidden="true" tabindex="-1"></a><span class="co"># Review namespace produces its own IDs and function call</span></span>
+<span id="cb8-41"><a href="#cb8-41" aria-hidden="true" tabindex="-1"></a>cfg_review <span class="op">=</span> WebAudioConfig(namespace<span class="op">=</span><span class="st">&quot;review&quot;</span>, indicator_selector<span class="op">=</span><span class="st">&quot;.ind&quot;</span>, enable_speed<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb8-42"><a href="#cb8-42" aria-hidden="true" tabindex="-1"></a>sel_rev <span class="op">=</span> render_speed_selector(cfg_review, current_speed<span class="op">=</span><span class="fl">2.0</span>, change_url<span class="op">=</span><span class="st">&quot;/r/speed_change&quot;</span>)</span>
+<span id="cb8-43"><a href="#cb8-43" aria-hidden="true" tabindex="-1"></a>html_rev <span class="op">=</span> to_xml(sel_rev)</span>
+<span id="cb8-44"><a href="#cb8-44" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="st">&#39;id=&quot;sd-review-speed-select&quot;&#39;</span> <span class="kw">in</span> html_rev</span>
+<span id="cb8-45"><a href="#cb8-45" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="st">&#39;setReviewSpeed&#39;</span> <span class="kw">in</span> html_rev</span>
+<span id="cb8-46"><a href="#cb8-46" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="st">&#39;setReviewSpeed(2.0)&#39;</span> <span class="kw">in</span> html_rev  <span class="co"># sync script</span></span>
+<span id="cb8-47"><a href="#cb8-47" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-48"><a href="#cb8-48" aria-hidden="true" tabindex="-1"></a><span class="co"># enable_speed=False: sync script is no-op even for non-default speed</span></span>
+<span id="cb8-49"><a href="#cb8-49" aria-hidden="true" tabindex="-1"></a>cfg_off <span class="op">=</span> WebAudioConfig(namespace<span class="op">=</span><span class="st">&quot;off&quot;</span>, indicator_selector<span class="op">=</span><span class="st">&quot;.ind&quot;</span>)  <span class="co"># enable_speed default False</span></span>
+<span id="cb8-50"><a href="#cb8-50" aria-hidden="true" tabindex="-1"></a>sel_off <span class="op">=</span> render_speed_selector(cfg_off, current_speed<span class="op">=</span><span class="fl">1.5</span>, change_url<span class="op">=</span><span class="st">&quot;/o/speed_change&quot;</span>)</span>
+<span id="cb8-51"><a href="#cb8-51" aria-hidden="true" tabindex="-1"></a>html_off <span class="op">=</span> to_xml(sel_off)</span>
+<span id="cb8-52"><a href="#cb8-52" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="st">&#39;setOffSpeed(1.5)&#39;</span> <span class="kw">not</span> <span class="kw">in</span> html_off  <span class="co"># sync no-op when enable_speed is False</span></span>
+<span id="cb8-53"><a href="#cb8-53" aria-hidden="true" tabindex="-1"></a><span class="co"># But the select still renders (namespace is still interpolated)</span></span>
+<span id="cb8-54"><a href="#cb8-54" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="st">&#39;id=&quot;sd-off-speed-select&quot;&#39;</span> <span class="kw">in</span> html_off</span>
+<span id="cb8-55"><a href="#cb8-55" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-56"><a href="#cb8-56" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">&quot;render_speed_selector tests passed&quot;</span>)</span></code></pre></div>
+</div>
+<div id="quarto-navigation-envelope" class="hidden">
+<p><span class="hidden quarto-markdown-envelope-contents" data-render-id="cXVhcnRvLWludC1zaWRlYmFyLXRpdGxl">cjm-fasthtml-web-audio</span> <span class="hidden quarto-markdown-envelope-contents" data-render-id="cXVhcnRvLWludC1uYXZiYXItdGl0bGU=">cjm-fasthtml-web-audio</span> <span class="hidden quarto-markdown-envelope-contents" data-render-id="cXVhcnRvLWludC1uZXh0">js</span> <span class="hidden quarto-markdown-envelope-contents" data-render-id="cXVhcnRvLWludC1wcmV2">cjm-fasthtml-web-audio</span> <span class="hidden quarto-markdown-envelope-contents" data-render-id="cXVhcnRvLWludC1zaWRlYmFyOi9pbmRleC5odG1sY2ptLWZhc3RodG1sLXdlYi1hdWRpbw==">cjm-fasthtml-web-audio</span> <span class="hidden quarto-markdown-envelope-contents" data-render-id="cXVhcnRvLWludC1zaWRlYmFyOi9jb21wb25lbnRzLmh0bWxjb21wb25lbnRz">components</span> <span class="hidden quarto-markdown-envelope-contents" data-render-id="cXVhcnRvLWludC1zaWRlYmFyOi9qcy5odG1sanM=">js</span> <span class="hidden quarto-markdown-envelope-contents" data-render-id="cXVhcnRvLWludC1zaWRlYmFyOi9tb2RlbHMuaHRtbG1vZGVscw==">models</span> <span class="hidden quarto-markdown-envelope-contents" data-render-id="cXVhcnRvLWJyZWFkY3J1bWJzLWNvbXBvbmVudHM=">components</span></p>
+</div>
+<div id="quarto-meta-markdown" class="hidden">
+<p><span class="hidden quarto-markdown-envelope-contents" data-render-id="cXVhcnRvLW1ldGF0aXRsZQ==">components – cjm-fasthtml-web-audio</span> <span class="hidden quarto-markdown-envelope-contents" data-render-id="cXVhcnRvLXR3aXR0ZXJjYXJkdGl0bGU=">components – cjm-fasthtml-web-audio</span> <span class="hidden quarto-markdown-envelope-contents" data-render-id="cXVhcnRvLW9nY2FyZHRpdGxl">components – cjm-fasthtml-web-audio</span> <span class="hidden quarto-markdown-envelope-contents" data-render-id="cXVhcnRvLW1ldGFzaXRlbmFtZQ==">cjm-fasthtml-web-audio</span> <span class="hidden quarto-markdown-envelope-contents" data-render-id="cXVhcnRvLXR3aXR0ZXJjYXJkZGVzYw==">FastHTML component helpers for the Web Audio API manager</span> <span class="hidden quarto-markdown-envelope-contents" data-render-id="cXVhcnRvLW9nY2FyZGRkZXNj">FastHTML component helpers for the Web Audio API manager</span> <span class="hidden quarto-markdown-envelope-contents" data-render-id="cXVhcnRvLW1ldGFzaXRlZGVzYw==">A reusable Web Audio API manager for FastHTML applications with multi-buffer support, parallel decode, and card-stack-compatible playback.</span></p>
+</div>
+</section>
+
+</main> <!-- /main -->
+<script id = "quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/cj-mills\.github\.io\/cjm-fasthtml-web-audio");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</section></section></main></div> <!-- /content -->
+
+
+
+
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/cj-mills/cjm-fasthtml-web-audio/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li></ul></div></div></div></footer></body></html>

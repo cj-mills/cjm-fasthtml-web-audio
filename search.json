@@ -1,0 +1,252 @@
+[
+  {
+    "objectID": "js.html",
+    "href": "js.html",
+    "title": "js",
+    "section": "",
+    "text": "Generates the JS state object for a Web Audio manager instance.\n\n\n\n\ndef generate_state_init(\n    config:WebAudioConfig, # Instance configuration\n)-&gt;str: # JS code that initializes the state object\n\nGenerate JS code to initialize the namespaced state object.",
+    "crumbs": [
+      "js"
+    ]
+  },
+  {
+    "objectID": "js.html#state-initialization",
+    "href": "js.html#state-initialization",
+    "title": "js",
+    "section": "",
+    "text": "Generates the JS state object for a Web Audio manager instance.\n\n\n\n\ndef generate_state_init(\n    config:WebAudioConfig, # Instance configuration\n)-&gt;str: # JS code that initializes the state object\n\nGenerate JS code to initialize the namespaced state object.",
+    "crumbs": [
+      "js"
+    ]
+  },
+  {
+    "objectID": "js.html#init-audio",
+    "href": "js.html#init-audio",
+    "title": "js",
+    "section": "Init Audio",
+    "text": "Init Audio\nReads audio URLs from a hidden input, fetches all files, and decodes them in parallel via Promise.all().\n\n\ngenerate_init_audio\n\ndef generate_init_audio(\n    config:WebAudioConfig, # Instance configuration\n)-&gt;str: # JS init function\n\nGenerate JS function that loads and decodes audio files in parallel.\nWhen config.enable_speed=True, the SoundTouch worklet processor is registered on the AudioContext before decoding. On registration failure, workletRegistered remains false and the play path falls back to naive (pitch-shifting) playbackRate.",
+    "crumbs": [
+      "js"
+    ]
+  },
+  {
+    "objectID": "js.html#stop-audio",
+    "href": "js.html#stop-audio",
+    "title": "js",
+    "section": "Stop Audio",
+    "text": "Stop Audio\n\n\ngenerate_stop_audio\n\ndef generate_stop_audio(\n    config:WebAudioConfig, # Instance configuration\n)-&gt;str: # JS stop function\n\nGenerate JS function that stops current playback.",
+    "crumbs": [
+      "js"
+    ]
+  },
+  {
+    "objectID": "js.html#play-segment",
+    "href": "js.html#play-segment",
+    "title": "js",
+    "section": "Play Segment",
+    "text": "Play Segment\nPlays a time range from a specific audio buffer. Supports optional playback speed and auto-navigate.\n\n\ngenerate_play_segment\n\ndef generate_play_segment(\n    config:WebAudioConfig, # Instance configuration\n    nav_down_btn_id:str='', # Nav down button ID (for auto-navigate)\n)-&gt;str: # JS play function\n\nGenerate JS function that plays a segment from a specific buffer.\nWhen config.enable_speed=True and speed != 1.0 and the SoundTouch worklet is registered, audio flows BufferSource -&gt; SoundTouchNode -&gt; destination, with pitch auto-compensated by the worklet so tempo changes preserve pitch. Otherwise audio flows BufferSource -&gt; destination (naive path; pitch shifts at non-1x).",
+    "crumbs": [
+      "js"
+    ]
+  },
+  {
+    "objectID": "js.html#optional-features",
+    "href": "js.html#optional-features",
+    "title": "js",
+    "section": "Optional Features",
+    "text": "Optional Features\nSpeed control, replay, and auto-navigate functions generated only when enabled.\n\n\ngenerate_speed_change_js\n\ndef generate_speed_change_js(\n    config:WebAudioConfig, # Instance configuration\n    speed:float, # New playback speed\n)-&gt;str: # JS snippet: updates JS playbackSpeed via set{Ns}Speed\n\nGenerate the JS body returned by a consumer’s /speed_change POST handler.\nConsumers wrap this in a Script(...) and return it so the client-side state updates after the server persists the new speed. Guarded with if (window.set{Ns}Speed) to tolerate the Script running before the web-audio script initializes.\n\n\n\ngenerate_optional_features\n\ndef generate_optional_features(\n    config:WebAudioConfig, # Instance configuration\n)-&gt;str: # JS for optional feature functions (empty if none enabled)\n\nGenerate JS for optional features based on config flags.\nWhen config.enable_speed=True, emits set{Ns}Speed, cycle{Ns}SpeedTo, cycle{Ns}SpeedUp, cycle{Ns}SpeedDown. The cycle helpers drive the shared speed &lt;select&gt; via a synthetic change event so the dropdown, JS state, and HTMX-backed server persistence stay in sync through a single code path.",
+    "crumbs": [
+      "js"
+    ]
+  },
+  {
+    "objectID": "js.html#focus-change-callback",
+    "href": "js.html#focus-change-callback",
+    "title": "js",
+    "section": "Focus Change Callback",
+    "text": "Focus Change Callback\nCard-stack-compatible callback triggered on focus changes. Reads data attributes from the card element to determine which buffer and time range to play.\n\n\ngenerate_focus_change\n\ndef generate_focus_change(\n    config:WebAudioConfig, # Instance configuration\n    focus_input_id:str, # Hidden input ID for focused index (kept for API compat; no longer written to)\n)-&gt;str: # JS focus change callback\n\nGenerate JS focus change callback for card stack integration.",
+    "crumbs": [
+      "js"
+    ]
+  },
+  {
+    "objectID": "js.html#htmx-aftersettle-handler",
+    "href": "js.html#htmx-aftersettle-handler",
+    "title": "js",
+    "section": "HTMX AfterSettle Handler",
+    "text": "HTMX AfterSettle Handler\nRe-attaches after each card swap to trigger focus change callback when navigation completes.\n\n\ngenerate_htmx_settle_handler\n\ndef generate_htmx_settle_handler(\n    config:WebAudioConfig, # Instance configuration\n    card_stack_id:str, # Card stack container ID\n)-&gt;str: # JS HTMX afterSettle handler\n\nGenerate HTMX afterSettle handler for card stack navigation.\nWhen config.should_play_fn is set, delegates the play guard to a consumer-defined window function (e.g., window.shouldAlignPlay()). Otherwise uses the default inline guard based on zone active state and auto-navigate flag.",
+    "crumbs": [
+      "js"
+    ]
+  },
+  {
+    "objectID": "js.html#full-script-assembly",
+    "href": "js.html#full-script-assembly",
+    "title": "js",
+    "section": "Full Script Assembly",
+    "text": "Full Script Assembly\nCombines all JS parts into a single string.\n\n\ngenerate_web_audio_js\n\ndef generate_web_audio_js(\n    config:WebAudioConfig, # Instance configuration\n    focus_input_id:str, # Hidden input ID for focused index\n    card_stack_id:str, # Card stack container ID\n    nav_down_btn_id:str='', # Nav down button ID (for auto-navigate)\n)-&gt;str: # Complete JS code for this instance\n\nGenerate the complete Web Audio API JS for a configured instance.",
+    "crumbs": [
+      "js"
+    ]
+  },
+  {
+    "objectID": "js.html#tests",
+    "href": "js.html#tests",
+    "title": "js",
+    "section": "Tests",
+    "text": "Tests\n\n# Test basic config generates expected function names\ncfg = WebAudioConfig(namespace=\"test\", indicator_selector=\".test-indicator\")\njs = generate_web_audio_js(cfg, focus_input_id=\"test-focus\", card_stack_id=\"test-cs\")\n\nassert \"window._webAudio_test\" in js\nassert \"window.initTestAudio\" in js\nassert \"window.stopTestAudio\" in js\nassert \"window.playTestSegment\" in js\nassert \"window.onTestFocusChange\" in js\nassert \"sd-test-audio-urls\" in js\nassert \"Promise.all\" in js\n\n# No optional features by default\nassert \"setTestSpeed\" not in js\nassert \"replayTestSegment\" not in js\nassert \"setTestAutoNavigate\" not in js\nprint(\"Basic config test passed\")\n\nBasic config test passed\n\n\n\n# Test full-featured config\ncfg2 = WebAudioConfig(\n    namespace=\"review\",\n    indicator_selector=\".review-playing-indicator\",\n    enable_speed=True, enable_replay=True, enable_auto_nav=True,\n)\njs2 = generate_web_audio_js(\n    cfg2, focus_input_id=\"review-focus\", card_stack_id=\"review-cs\",\n    nav_down_btn_id=\"review-nav-down\",\n)\n\nassert \"window._webAudio_review\" in js2\nassert \"window.setReviewSpeed\" in js2\nassert \"window.replayReviewSegment\" in js2\nassert \"window.setReviewAutoNavigate\" in js2\nassert \"playbackSpeed\" in js2\nassert \"review-nav-down\" in js2\nassert \"autoNavigate\" in js2\n\n# Auto-nav carve-out: settle handler checks autoNavigate when zone is not active\nassert \"_webAudio_review\" in js2\nassert \"zoneActive\" in js2  # Uses two-step check (not early return)\nassert \".autoNavigate\" in js2  # Checks auto-navigate flag in settle handler\nprint(\"Full-featured config test passed\")\n\n# Basic config (no auto-nav) uses strict zone-active guard\njs_basic_settle = generate_htmx_settle_handler(\n    WebAudioConfig(namespace=\"basic\", indicator_selector=\".ind\"),\n    card_stack_id=\"basic-cs\",\n)\nassert \"zoneActive\" not in js_basic_settle  # No two-step check\nassert \"autoNavigate\" not in js_basic_settle  # No carve-out\nassert \"activeZoneId !== 'basic-cs'\" in js_basic_settle  # Strict guard\nprint(\"Basic settle handler (no carve-out) test passed\")\n\n# should_play_fn: consumer callback replaces zone guard\ncfg_custom = WebAudioConfig(\n    namespace=\"align\",\n    indicator_selector=\".vad-ind\",\n    enable_auto_nav=True,\n    should_play_fn=\"shouldAlignPlay\",\n)\njs_custom = generate_htmx_settle_handler(cfg_custom, card_stack_id=\"align-cs\")\nassert \"shouldAlignPlay\" in js_custom\nassert \"zoneActive\" not in js_custom  # No default guard\nassert \"autoNavigate\" not in js_custom  # No default carve-out\nprint(\"should_play_fn callback test passed\")\n\n\n# Worklet wiring tests — pitch-preserving playback via SoundTouch AudioWorklet\n\n# When enable_speed=False: zero worklet code anywhere in the output\ncfg_no_speed = WebAudioConfig(namespace=\"plain\", indicator_selector=\".ind\")\njs_no_speed = generate_web_audio_js(cfg_no_speed, focus_input_id=\"plain-focus\", card_stack_id=\"plain-cs\")\nassert \"workletRegistered\" not in js_no_speed\nassert \"workletNode\" not in js_no_speed\nassert \"soundtouch-processor\" not in js_no_speed\nassert \"audioWorklet.addModule\" not in js_no_speed\nassert \"AudioWorkletNode\" not in js_no_speed\nprint(\"No-speed config emits zero worklet code — passed\")\n\n# When enable_speed=True (default worklet_url): full worklet wiring present\ncfg_speed = WebAudioConfig(namespace=\"align\", indicator_selector=\".vad-ind\", enable_speed=True)\njs_speed = generate_web_audio_js(cfg_speed, focus_input_id=\"align-focus\", card_stack_id=\"align-cs\")\n\n# State init: worklet state fields\nassert \"_webAudio_align.workletRegistered = false\" in js_speed\nassert \"_webAudio_align.workletNode = null\" in js_speed\n\n# Init audio: registration block with default URL, guarded by workletRegistered flag\nassert DEFAULT_WORKLET_URL == \"/static/cjm-web-audio/soundtouch-processor.js\"\nassert f\"audioWorklet.addModule('{DEFAULT_WORKLET_URL}')\" in js_speed\nassert \"if (!s.workletRegistered)\" in js_speed\nassert \"s.workletRegistered = true\" in js_speed\n\n# Play segment: dual-path connection\nassert \"if (speed !== 1.0 && s.workletRegistered)\" in js_speed\nassert \"new AudioWorkletNode(s.ctx, 'soundtouch-processor'\" in js_speed\nassert \"stNode.parameters.get('playbackRate').value = speed\" in js_speed\nassert \"stNode.parameters.get('pitch').value = 1.0\" in js_speed\nassert \"src.connect(stNode)\" in js_speed\nassert \"stNode.connect(s.ctx.destination)\" in js_speed\n\n# Stop audio: worklet disconnect\nassert \"s.workletNode.disconnect()\" in js_speed\nprint(\"Speed config with default URL emits full worklet wiring — passed\")\n\n# Custom worklet_url propagates into addModule call\ncfg_custom_url = WebAudioConfig(\n    namespace=\"review\",\n    indicator_selector=\".rev-ind\",\n    enable_speed=True,\n    worklet_url=\"/assets/audio/soundtouch-processor.js\",\n)\njs_custom_url = generate_web_audio_js(cfg_custom_url, focus_input_id=\"r-f\", card_stack_id=\"r-cs\")\nassert \"audioWorklet.addModule('/assets/audio/soundtouch-processor.js')\" in js_custom_url\nassert f\"addModule('{DEFAULT_WORKLET_URL}')\" not in js_custom_url\nprint(\"Custom worklet_url propagates correctly — passed\")\n\n# Speed-aware timeout math unchanged\nassert \"(duration / speed) * 1000\" in js_speed\n# Non-speed config still uses plain duration\nassert \"(duration / speed)\" not in js_no_speed\nprint(\"Timeout math correct in both branches — passed\")\n\n\n# Speed selector mechanism tests: PLAYBACK_SPEEDS, cycle helpers, speed-change JS\n\n# PLAYBACK_SPEEDS is sorted ascending (cycle helpers rely on this)\nvals = [s for s, _ in PLAYBACK_SPEEDS]\nassert vals == sorted(vals), \"PLAYBACK_SPEEDS values must be sorted ascending\"\nassert vals[0] == 0.5 and vals[-1] == 3.0\nassert (1.0, \"1x\") in PLAYBACK_SPEEDS\nprint(\"PLAYBACK_SPEEDS ordering OK\")\n\n# Cycle helpers only emitted when enable_speed=True\ncfg_off = WebAudioConfig(namespace=\"off\", indicator_selector=\".ind\")\nopt_off = generate_optional_features(cfg_off)\nassert \"cycleOffSpeedUp\" not in opt_off\nassert \"cycleOffSpeedDown\" not in opt_off\nassert \"cycleOffSpeedTo\" not in opt_off\nassert \"setOffSpeed\" not in opt_off\nprint(\"Cycle helpers omitted when enable_speed=False\")\n\n# enable_speed=True: all four speed functions emitted with correct namespace\ncfg_on = WebAudioConfig(namespace=\"align\", indicator_selector=\".ind\", enable_speed=True)\nopt_on = generate_optional_features(cfg_on)\nassert \"window.setAlignSpeed = function(speed)\" in opt_on\nassert \"window.cycleAlignSpeedTo = function(speed)\" in opt_on\nassert \"window.cycleAlignSpeedUp = function()\" in opt_on\nassert \"window.cycleAlignSpeedDown = function()\" in opt_on\n\n# cycle{Ns}SpeedTo looks up by parsed value (NOT via sel.value = String(...))\n# — avoids the Python str(1.0)==\"1.0\" vs JS String(1.0)===\"1\" mismatch that blanks\n# the dropdown when the target speed is a whole number (1.0/2.0/3.0).\nassert \"sd-align-speed-select\" in opt_on\nassert \"sel.value = String\" not in opt_on, \"Must not use sel.value = String(speed) — blanks dropdown on whole-number speeds\"\nassert \"parseFloat(sel.options[i].value)\" in opt_on\nassert \"sel.selectedIndex = i\" in opt_on\n# Change event is still dispatched so HTMX persistence + onchange JS fire together\nassert \"sel.dispatchEvent(new Event('change'\" in opt_on\n\n# Cycle Up/Down inline the full speed list and clamp at ends\nassert \"[0.5, 0.75, 1.0, 1.25, 1.5, 2.0, 2.5, 3.0]\" in opt_on\n# Up loop: strict-greater scan from start\nassert \"speeds[i] &gt; current + 1e-6\" in opt_on\n# Down loop: strict-less scan from end\nassert \"speeds[i] &lt; current - 1e-6\" in opt_on\nprint(\"enable_speed=True emits complete cycle helper set with correct wiring\")\n\n# generate_speed_change_js returns namespace-aware guarded setter call\njs_sc_align = generate_speed_change_js(cfg_on, 1.5)\nassert js_sc_align == \"if (window.setAlignSpeed) window.setAlignSpeed(1.5);\"\n\ncfg_rev = WebAudioConfig(namespace=\"review\", indicator_selector=\".ind\", enable_speed=True)\njs_sc_rev = generate_speed_change_js(cfg_rev, 2.0)\nassert js_sc_rev == \"if (window.setReviewSpeed) window.setReviewSpeed(2.0);\"\nprint(\"generate_speed_change_js produces namespace-aware guarded setter\")\n\n# Full pipeline: generate_web_audio_js includes cycle helpers when enable_speed=True\nfull = generate_web_audio_js(cfg_on, focus_input_id=\"f\", card_stack_id=\"cs\")\nassert \"cycleAlignSpeedUp\" in full\nassert \"cycleAlignSpeedDown\" in full\nprint(\"cycle helpers present in full generate_web_audio_js output\")",
+    "crumbs": [
+      "js"
+    ]
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "cjm-fasthtml-web-audio",
+    "section": "",
+    "text": "pip install cjm_fasthtml_web_audio",
+    "crumbs": [
+      "cjm-fasthtml-web-audio"
+    ]
+  },
+  {
+    "objectID": "index.html#install",
+    "href": "index.html#install",
+    "title": "cjm-fasthtml-web-audio",
+    "section": "",
+    "text": "pip install cjm_fasthtml_web_audio",
+    "crumbs": [
+      "cjm-fasthtml-web-audio"
+    ]
+  },
+  {
+    "objectID": "index.html#project-structure",
+    "href": "index.html#project-structure",
+    "title": "cjm-fasthtml-web-audio",
+    "section": "Project Structure",
+    "text": "Project Structure\nnbs/\n├── components.ipynb # FastHTML component helpers for the Web Audio API manager\n├── js.ipynb         # JavaScript generation for the Web Audio API manager\n└── models.ipynb     # Configuration and HTML ID types for the Web Audio API manager\nTotal: 3 notebooks",
+    "crumbs": [
+      "cjm-fasthtml-web-audio"
+    ]
+  },
+  {
+    "objectID": "index.html#module-dependencies",
+    "href": "index.html#module-dependencies",
+    "title": "cjm-fasthtml-web-audio",
+    "section": "Module Dependencies",
+    "text": "Module Dependencies\ngraph LR\n    components[components&lt;br/&gt;components]\n    js[js&lt;br/&gt;js]\n    models[models&lt;br/&gt;models]\n\n    components --&gt; js\n    components --&gt; models\n    js --&gt; models\n3 cross-module dependencies detected",
+    "crumbs": [
+      "cjm-fasthtml-web-audio"
+    ]
+  },
+  {
+    "objectID": "index.html#cli-reference",
+    "href": "index.html#cli-reference",
+    "title": "cjm-fasthtml-web-audio",
+    "section": "CLI Reference",
+    "text": "CLI Reference\nNo CLI commands found in this project.",
+    "crumbs": [
+      "cjm-fasthtml-web-audio"
+    ]
+  },
+  {
+    "objectID": "index.html#module-overview",
+    "href": "index.html#module-overview",
+    "title": "cjm-fasthtml-web-audio",
+    "section": "Module Overview",
+    "text": "Module Overview\nDetailed documentation for each module in the project:\n\ncomponents (components.ipynb)\n\nFastHTML component helpers for the Web Audio API manager\n\n\nImport\nfrom cjm_fasthtml_web_audio.components import (\n    DEFAULT_STATIC_MOUNT_PATH,\n    render_audio_urls_input,\n    render_web_audio_script,\n    mount_web_audio_static,\n    render_initial_speed_sync,\n    render_speed_selector\n)\n\n\nFunctions\ndef render_audio_urls_input(\n    config: WebAudioConfig,    # Instance configuration\n    audio_urls: List[str],     # Audio file URLs to load\n    oob: bool = False,         # Whether to render as OOB swap\n) -&gt; Any:  # Hidden input element with JSON-encoded URLs\n    \"Render a hidden input storing audio URLs as JSON.\"\ndef render_web_audio_script(\n    config: WebAudioConfig,        # Instance configuration\n    focus_input_id: str,           # Hidden input ID for focused index\n    card_stack_id: str,            # Card stack container ID\n    nav_down_btn_id: str = \"\",     # Nav down button ID (for auto-navigate)\n) -&gt; Any:  # Script element with complete Web Audio JS\n    \"Render the complete Web Audio API script for a configured instance.\"\ndef mount_web_audio_static(\n    app,                                            # FastHTML/Starlette app\n    mount_path: str = DEFAULT_STATIC_MOUNT_PATH,    # URL prefix to mount static dir at\n) -&gt; str:                                           # URL of the SoundTouch worklet processor\n    \"\"\"\n    Mount the library's vendored static assets (SoundTouch worklet, license).\n    \n    Inserts the Mount at `app.routes[0]` so it's matched BEFORE any catch-all\n    routes FastHTML may have registered. Returns the URL where the SoundTouch\n    worklet processor is served; when `mount_path` is the default the URL equals\n    `DEFAULT_WORKLET_URL` — so `WebAudioConfig(enable_speed=True)` with no explicit\n    `worklet_url` just works.\n    \"\"\"\ndef render_initial_speed_sync(\n    config: WebAudioConfig,     # Instance configuration\n    speed: float,               # Persisted playback speed (e.g. from step state)\n) -&gt; Any:                       # Script element (empty if speed is default or speed is disabled)\n    \"\"\"\n    Render a &lt;Script&gt; that syncs the JS state's playbackSpeed to `speed` after insertion.\n    \n    Polls briefly (~1 second, 20ms intervals) for `window.set{Ns}Speed` so the helper\n    works regardless of whether the web-audio script or the toolbar script runs first.\n    Returns an empty Script when `speed == 1.0` (state_init already defaults to 1.0)\n    or when `config.enable_speed` is False.\n    \"\"\"\ndef render_speed_selector(\n    config: WebAudioConfig,          # Instance configuration (must have enable_speed=True for sync to fire)\n    current_speed: float = 1.0,      # Current / persisted playback speed\n    change_url: str = \"\",            # URL to POST speed changes to (empty → no server persist)\n    label: Optional[str] = \"Speed:\", # Leading label text (None/\"\" → omit label span)\n) -&gt; Any:                            # Div(Span?, Select, sync Script)\n    \"\"\"\n    Render the shared playback speed selector.\n    \n    Emits a DaisyUI `&lt;select&gt;` whose `onchange` calls `window.set{Ns}Speed(...)` for\n    immediate JS state update. When `change_url` is provided, also POSTs to that URL\n    via HTMX for server-side persistence (consumers typically return `Script(generate_speed_change_js(...))`).\n    \n    Also emits `render_initial_speed_sync(config, current_speed)` so the JS state\n    reconciles to `current_speed` on initial render and OOB swaps — the `&lt;option selected&gt;`\n    attribute only restores the dropdown visually.\n    \"\"\"\n\n\nVariables\nDEFAULT_STATIC_MOUNT_PATH = '/static/cjm-web-audio'\n\n\n\njs (js.ipynb)\n\nJavaScript generation for the Web Audio API manager\n\n\nImport\nfrom cjm_fasthtml_web_audio.js import (\n    DEFAULT_WORKLET_URL,\n    PLAYBACK_SPEEDS,\n    generate_state_init,\n    generate_init_audio,\n    generate_stop_audio,\n    generate_play_segment,\n    generate_optional_features,\n    generate_speed_change_js,\n    generate_focus_change,\n    generate_htmx_settle_handler,\n    generate_web_audio_js\n)\n\n\nFunctions\ndef generate_state_init(\n    config: WebAudioConfig,  # Instance configuration\n) -&gt; str:  # JS code that initializes the state object\n    \"Generate JS code to initialize the namespaced state object.\"\ndef generate_init_audio(\n    config: WebAudioConfig,  # Instance configuration\n) -&gt; str:  # JS init function\n    \"\"\"\n    Generate JS function that loads and decodes audio files in parallel.\n    \n    When `config.enable_speed=True`, the SoundTouch worklet processor is registered\n    on the AudioContext before decoding. On registration failure, `workletRegistered`\n    remains false and the play path falls back to naive (pitch-shifting) playbackRate.\n    \"\"\"\ndef generate_stop_audio(\n    config: WebAudioConfig,  # Instance configuration\n) -&gt; str:  # JS stop function\n    \"Generate JS function that stops current playback.\"\ndef generate_play_segment(\n    config: WebAudioConfig,  # Instance configuration\n    nav_down_btn_id: str = \"\",  # Nav down button ID (for auto-navigate)\n) -&gt; str:  # JS play function\n    \"\"\"\n    Generate JS function that plays a segment from a specific buffer.\n    \n    When `config.enable_speed=True` and speed != 1.0 and the SoundTouch worklet is\n    registered, audio flows BufferSource -&gt; SoundTouchNode -&gt; destination, with\n    pitch auto-compensated by the worklet so tempo changes preserve pitch. Otherwise\n    audio flows BufferSource -&gt; destination (naive path; pitch shifts at non-1x).\n    \"\"\"\ndef _speed_values_js_array() -&gt; str:  # JS array literal of speed values\n    \"\"\"Render PLAYBACK_SPEEDS values as a JS array literal (e.g., '[0.5, 0.75, ...]').\"\"\"\n    return \"[\" + \", \".join(str(s) for s, _ in PLAYBACK_SPEEDS) + \"]\"\n\n\ndef generate_optional_features(\n    config: WebAudioConfig,  # Instance configuration\n) -&gt; str:  # JS for optional feature functions (empty if none enabled)\n    \"Render PLAYBACK_SPEEDS values as a JS array literal (e.g., '[0.5, 0.75, ...]').\"\ndef generate_optional_features(\n    config: WebAudioConfig,  # Instance configuration\n) -&gt; str:  # JS for optional feature functions (empty if none enabled)\n    \"\"\"\n    Generate JS for optional features based on config flags.\n    \n    When `config.enable_speed=True`, emits `set{Ns}Speed`, `cycle{Ns}SpeedTo`,\n    `cycle{Ns}SpeedUp`, `cycle{Ns}SpeedDown`. The cycle helpers drive the shared\n    speed `&lt;select&gt;` via a synthetic `change` event so the dropdown, JS state, and\n    HTMX-backed server persistence stay in sync through a single code path.\n    \"\"\"\ndef generate_speed_change_js(\n    config: WebAudioConfig,  # Instance configuration\n    speed: float,            # New playback speed\n) -&gt; str:  # JS snippet: updates JS playbackSpeed via set{Ns}Speed\n    \"\"\"\n    Generate the JS body returned by a consumer's `/speed_change` POST handler.\n    \n    Consumers wrap this in a `Script(...)` and return it so the client-side state\n    updates after the server persists the new speed. Guarded with `if (window.set{Ns}Speed)`\n    to tolerate the Script running before the web-audio script initializes.\n    \"\"\"\ndef generate_focus_change(\n    config: WebAudioConfig,  # Instance configuration\n    focus_input_id: str,  # Hidden input ID for focused index (kept for API compat; no longer written to)\n) -&gt; str:  # JS focus change callback\n    \"Generate JS focus change callback for card stack integration.\"\ndef generate_htmx_settle_handler(\n    config: WebAudioConfig,  # Instance configuration\n    card_stack_id: str,  # Card stack container ID\n) -&gt; str:  # JS HTMX afterSettle handler\n    \"\"\"\n    Generate HTMX afterSettle handler for card stack navigation.\n    \n    When `config.should_play_fn` is set, delegates the play guard to a consumer-defined\n    window function (e.g., `window.shouldAlignPlay()`). Otherwise uses the default\n    inline guard based on zone active state and auto-navigate flag.\n    \"\"\"\ndef generate_web_audio_js(\n    config: WebAudioConfig,  # Instance configuration\n    focus_input_id: str,  # Hidden input ID for focused index\n    card_stack_id: str,  # Card stack container ID\n    nav_down_btn_id: str = \"\",  # Nav down button ID (for auto-navigate)\n) -&gt; str:  # Complete JS code for this instance\n    \"Generate the complete Web Audio API JS for a configured instance.\"\n\n\nVariables\nDEFAULT_WORKLET_URL = '/static/cjm-web-audio/soundtouch-processor.js'\nPLAYBACK_SPEEDS = [8 items]\n\n\n\nmodels (models.ipynb)\n\nConfiguration and HTML ID types for the Web Audio API manager\n\n\nImport\nfrom cjm_fasthtml_web_audio.models import (\n    WebAudioConfig,\n    WebAudioHtmlIds\n)\n\n\nClasses\n@dataclass\nclass WebAudioConfig:\n    \"Configuration for a Web Audio API manager instance.\"\n    \n    namespace: str  # Unique prefix (e.g., \"align\", \"review\")\n    indicator_selector: str  # CSS selector for playing indicators\n    data_index_attr: str = 'audioFileIndex'  # Data attr name for buffer index\n    data_start_attr: str = 'startTime'  # Data attr name for start time\n    data_end_attr: str = 'endTime'  # Data attr name for end time\n    enable_speed: bool = False  # Playback speed support (pitch-preserving via SoundTouch worklet)\n    enable_replay: bool = False  # Replay current segment support\n    enable_auto_nav: bool = False  # Auto-navigate on completion support\n    should_play_fn: str = ''  # Named window function for custom play guard (replaces default zone guard)\n    worklet_url: Optional[str]  # URL of vendored soundtouch-processor.js; None -&gt; default mount path\n    \n    def ns(self) -&gt; str:  # Capitalized namespace for JS function names\n            \"\"\"Capitalized namespace for JS function names (e.g., 'align' -&gt; 'Align').\"\"\"\n            return self.namespace.capitalize()\n    \n        @property\n        def state_key(self) -&gt; str:  # JS state object key\n        \"Capitalized namespace for JS function names (e.g., 'align' -&gt; 'Align').\"\n    \n    def state_key(self) -&gt; str:  # JS state object key\n        \"JS global state object key (e.g., '_webAudio_align').\"\nclass WebAudioHtmlIds:\n    \"HTML ID generators for Web Audio manager elements.\"\n    \n    def audio_urls_input(\n            namespace: str  # Instance namespace\n        ) -&gt; str:  # HTML ID for audio URLs hidden input\n        \"ID for the hidden input storing audio file URLs as JSON.\"\n    \n    def speed_select(\n            namespace: str  # Instance namespace\n        ) -&gt; str:  # HTML ID for the playback speed &lt;select&gt;\n        \"ID for the playback speed selector element.\"",
+    "crumbs": [
+      "cjm-fasthtml-web-audio"
+    ]
+  },
+  {
+    "objectID": "components.html",
+    "href": "components.html",
+    "title": "components",
+    "section": "",
+    "text": "Hidden input that stores audio file URLs as a JSON array. The JS init function reads from this element to know which files to fetch and decode.\n\n\n\n\ndef render_audio_urls_input(\n    config:WebAudioConfig, # Instance configuration\n    audio_urls:List, # Audio file URLs to load\n    oob:bool=False, # Whether to render as OOB swap\n)-&gt;Any: # Hidden input element with JSON-encoded URLs\n\nRender a hidden input storing audio URLs as JSON.",
+    "crumbs": [
+      "components"
+    ]
+  },
+  {
+    "objectID": "components.html#audio-urls-input",
+    "href": "components.html#audio-urls-input",
+    "title": "components",
+    "section": "",
+    "text": "Hidden input that stores audio file URLs as a JSON array. The JS init function reads from this element to know which files to fetch and decode.\n\n\n\n\ndef render_audio_urls_input(\n    config:WebAudioConfig, # Instance configuration\n    audio_urls:List, # Audio file URLs to load\n    oob:bool=False, # Whether to render as OOB swap\n)-&gt;Any: # Hidden input element with JSON-encoded URLs\n\nRender a hidden input storing audio URLs as JSON.",
+    "crumbs": [
+      "components"
+    ]
+  },
+  {
+    "objectID": "components.html#web-audio-script",
+    "href": "components.html#web-audio-script",
+    "title": "components",
+    "section": "Web Audio Script",
+    "text": "Web Audio Script\nAssembles the complete JS into a FastHTML Script element.\n\n\nrender_web_audio_script\n\ndef render_web_audio_script(\n    config:WebAudioConfig, # Instance configuration\n    focus_input_id:str, # Hidden input ID for focused index\n    card_stack_id:str, # Card stack container ID\n    nav_down_btn_id:str='', # Nav down button ID (for auto-navigate)\n)-&gt;Any: # Script element with complete Web Audio JS\n\nRender the complete Web Audio API script for a configured instance.",
+    "crumbs": [
+      "components"
+    ]
+  },
+  {
+    "objectID": "components.html#mount-static-assets",
+    "href": "components.html#mount-static-assets",
+    "title": "components",
+    "section": "Mount Static Assets",
+    "text": "Mount Static Assets\nMounts the library’s vendored static directory (containing the SoundTouch worklet processor and its license) at a configurable URL path. Host apps call this once at startup when using enable_speed=True. Returns the URL of the SoundTouch worklet so consumers can pass it into WebAudioConfig.worklet_url if they mount somewhere non-default.\n\n\nmount_web_audio_static\n\ndef mount_web_audio_static(\n    app, # FastHTML/Starlette app\n    mount_path:str='/static/cjm-web-audio', # URL prefix to mount static dir at\n)-&gt;str: # URL of the SoundTouch worklet processor\n\nMount the library’s vendored static assets (SoundTouch worklet, license).\nInserts the Mount at app.routes[0] so it’s matched BEFORE any catch-all routes FastHTML may have registered. Returns the URL where the SoundTouch worklet processor is served; when mount_path is the default the URL equals DEFAULT_WORKLET_URL — so WebAudioConfig(enable_speed=True) with no explicit worklet_url just works.",
+    "crumbs": [
+      "components"
+    ]
+  },
+  {
+    "objectID": "components.html#initial-speed-sync",
+    "href": "components.html#initial-speed-sync",
+    "title": "components",
+    "section": "Initial Speed Sync",
+    "text": "Initial Speed Sync\nSyncs the web-audio JS state (window._webAudio_{namespace}.playbackSpeed) to a persisted speed value after render. Works around generate_state_init unconditionally resetting playbackSpeed to 1.0 every time the script re-executes — the &lt;option selected&gt; attribute on a speed selector only restores the dropdown visually, so the actual JS state must be synced explicitly when it should be something other than 1.0.\nTypical use: emit alongside a speed selector whenever the current/persisted speed differs from 1.0. Callers on step pages, chrome switches, and HTMX OOB swaps all benefit because the helper polls briefly for window.set{Ns}Speed — robust to script execution order between toolbar (caller) and column body (web-audio script).\n\n\nrender_initial_speed_sync\n\ndef render_initial_speed_sync(\n    config:WebAudioConfig, # Instance configuration\n    speed:float, # Persisted playback speed (e.g. from step state)\n)-&gt;Any: # Script element (empty if speed is default or speed is disabled)\n\n*Render a",
+    "crumbs": [
+      "components"
+    ]
+  },
+  {
+    "objectID": "models.html",
+    "href": "models.html",
+    "title": "models",
+    "section": "",
+    "text": "def WebAudioConfig(\n    namespace:str, indicator_selector:str, data_index_attr:str='audioFileIndex', data_start_attr:str='startTime',\n    data_end_attr:str='endTime', enable_speed:bool=False, enable_replay:bool=False, enable_auto_nav:bool=False,\n    should_play_fn:str='', worklet_url:Optional=None\n)-&gt;None:\n\nConfiguration for a Web Audio API manager instance.",
+    "crumbs": [
+      "models"
+    ]
+  },
+  {
+    "objectID": "models.html#webaudioconfig",
+    "href": "models.html#webaudioconfig",
+    "title": "models",
+    "section": "",
+    "text": "def WebAudioConfig(\n    namespace:str, indicator_selector:str, data_index_attr:str='audioFileIndex', data_start_attr:str='startTime',\n    data_end_attr:str='endTime', enable_speed:bool=False, enable_replay:bool=False, enable_auto_nav:bool=False,\n    should_play_fn:str='', worklet_url:Optional=None\n)-&gt;None:\n\nConfiguration for a Web Audio API manager instance.",
+    "crumbs": [
+      "models"
+    ]
+  },
+  {
+    "objectID": "models.html#webaudiohtmlids",
+    "href": "models.html#webaudiohtmlids",
+    "title": "models",
+    "section": "WebAudioHtmlIds",
+    "text": "WebAudioHtmlIds\n\n\nWebAudioHtmlIds\n\ndef WebAudioHtmlIds(\n    args:VAR_POSITIONAL, kwargs:VAR_KEYWORD\n):\n\nHTML ID generators for Web Audio manager elements.",
+    "crumbs": [
+      "models"
+    ]
+  },
+  {
+    "objectID": "models.html#tests",
+    "href": "models.html#tests",
+    "title": "models",
+    "section": "Tests",
+    "text": "Tests\n\ncfg = WebAudioConfig(namespace=\"align\", indicator_selector=\".vad-playing-indicator\")\nassert cfg.ns == \"Align\"\nassert cfg.state_key == \"_webAudio_align\"\nassert cfg.data_index_attr == \"audioFileIndex\"\nassert cfg.enable_speed == False\nassert cfg.worklet_url is None\n\ncfg2 = WebAudioConfig(\n    namespace=\"review\",\n    indicator_selector=\".review-playing-indicator\",\n    enable_speed=True, enable_replay=True, enable_auto_nav=True,\n    worklet_url=\"/static/cjm-web-audio/soundtouch-processor.js\",\n)\nassert cfg2.ns == \"Review\"\nassert cfg2.state_key == \"_webAudio_review\"\nassert cfg2.enable_speed == True\nassert cfg2.worklet_url == \"/static/cjm-web-audio/soundtouch-processor.js\"\n\nassert WebAudioHtmlIds.audio_urls_input(\"align\") == \"sd-align-audio-urls\"\nassert WebAudioHtmlIds.speed_select(\"align\") == \"sd-align-speed-select\"\nassert WebAudioHtmlIds.speed_select(\"review\") == \"sd-review-speed-select\"\nprint(\"All tests passed\")",
+    "crumbs": [
+      "models"
+    ]
+  }
+]
